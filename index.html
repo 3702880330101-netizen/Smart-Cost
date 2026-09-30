@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SmartCost AI &middot; Gemelo economico para experimentar antes de decidir</title>
+<meta name="description" content="SmartCost AI: gemelo economico para simular costos, margen, punto de equilibrio y utilidad, comparar escenarios y medir la sensibilidad de cada variable. Motor de calculo en Python sobre Google Colab, interfaz en GitHub Pages.">
+<meta name="color-scheme" content="light">
+<link rel="icon" href="assets/icono.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<!--
+  Chart.js se carga desde un CDN. Es la unica dependencia externa del frontend.
+  Se elige la version 4 con integrity para que el navegador verifique el archivo.
+  Si el CDN no responde, el resto del tablero sigue funcionando: los graficos
+  se sustituyen por un aviso y las tablas siguen mostrando todos los numeros.
+-->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"
+        crossorigin="anonymous" defer></script>
+</head>
+<body>
+
+<header class="encabezado">
+  <div class="contenido">
+    <h1>SmartCost AI</h1>
+    <p class="lema">Un gemelo economico para experimentar antes de decidir.</p>
+    <div class="meta">
+      <span>Feria de Innovacion 2026</span>
+      <span>Ingenieria de Costos</span>
+      <span>Motor de calculo: Python en Google Colab</span>
+      <span>Interfaz: GitHub Pages</span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ====================== CONEXION CON EL BACKEND ====================== -->
+  <section class="seccion" id="conexion">
+    <h2><span class="num">0</span> Conexion con Google Colab
+      <span class="nota">La URL cambia en cada sesion de Colab: se pega aqui y se recuerda en este navegador</span></h2>
+    <p class="intro">
+      Esta pagina no calcula nada. Solo recoge las nueve variables y las envia al motor de Python
+      que corre en Google Colab. Para empezar, levantá el servidor en el notebook, copiá la URL
+      que imprime y pegala abajo.
+    </p>
+
+    <div class="tarjeta">
+      <div class="rejilla dos">
+        <div>
+          <label class="unidad" for="api-url" style="display:block;font-size:12px;font-weight:600;margin-bottom:4px;">
+            URL del backend (termina en <code>/simulate</code> o en la raiz del tunel)
+          </label>
+          <input type="url" id="api-url" placeholder="https://a1b2-c3d4-e5f6.ngrok-free.app"
+                 spellcheck="false" autocomplete="off">
+          <p class="nota">
+            Ejemplos validos: <code>https://xxxx.ngrok-free.app</code> o
+            <code>https://tunnel.example.com</code>. La pagina agrega <code>/simulate</code> al final si falta.
+          </p>
+        </div>
+        <div>
+          <label class="unidad" for="paso-sens" style="display:block;font-size:12px;font-weight:600;margin-bottom:4px;">
+            Paso del analisis de sensibilidad (por ciento)
+          </label>
+          <input type="number" id="paso-sens" value="10" min="1" max="100" step="1"
+                 style="max-width:130px;">
+          <p class="nota">
+            El motor mueve cada variable este porcentaje hacia arriba y hacia abajo y mide el cambio
+            en la utilidad. No lo decide la IA.
+          </p>
+        </div>
+      </div>
+
+      <div class="barra-acciones">
+        <button type="button" id="btn-probar">Probar conexion</button>
+        <button type="button" class="secundario" id="btn-guardar-url">Guardar URL en este navegador</button>
+        <button type="button" class="secundario" id="btn-borrar-url">Olvidar URL guardada</button>
+        <span class="estado" id="estado-conexion" role="status" aria-live="polite">
+          <span class="punto" aria-hidden="true"></span><span id="texto-estado-conexion">Sin configurar</span>
+        </span>
+      </div>
+
+      <p class="nota">
+        <strong>La clave de la IA nunca pasa por aqui.</strong> Vive en un secreto de Google Colab y el
+        navegador solo recibe el texto ya redactado. No se puede escribir ninguna API key en esta pagina.
+      </p>
+    </div>
+  </section>
+
+  <!-- ========================= DATOS DE ENTRADA =========================== -->
+  <section class="seccion" id="entradas">
+    <h2><span class="num">1</span> Datos de entrada
+      <span class="nota">Las nueve variables del documento. Todas editables.</span></h2>
+    <p class="intro">
+      Estos son los datos de entrada del modelo. El nombre tecnico de cada variable aparece abajo: es
+      exactamente el nombre que viaja en el JSON y que usa el motor de Python, para que la
+      trazabilidad sea directa.
+    </p>
+
+    <div class="rejilla tres" id="formulario-entradas"></div>
+
+    <div class="barra-acciones">
+      <button type="button" id="btn-calcular">Calcular escenario</button>
+      <button type="button" class="secundario" id="btn-fijar-base">Fijar estos datos como escenario base</button>
+      <button type="button" class="secundario" id="btn-caso-base">Cargar la PRUEBA 1 (caso base)</button>
+      <button type="button" class="secundario" id="btn-caso-mp">PRUEBA 2: MP +12 %</button>
+      <button type="button" class="secundario" id="btn-caso-desp">PRUEBA 3: desperdicio 4 % a 9 %</button>
+      <button type="button" class="secundario" id="btn-caso-extremo">PRUEBA 4: margen &lt;= 0</button>
+      <span class="estado" id="estado-simulacion" role="status" aria-live="polite">
+        <span class="punto" aria-hidden="true"></span><span id="texto-estado-simulacion">Sin calcular</span>
+      </span>
+    </div>
+
+    <div id="errores-validacion" aria-live="assertive"></div>
+  </section>
+
+  <!-- ======================= AJUSTES DE ESCENARIOS ======================= -->
+  <section class="seccion" id="ajustes">
+    <h2><span class="num">2</span> Como se construyen los escenarios
+      <span class="nota">Los cambios se declaran aqui y quedan visibles antes de simular</span></h2>
+    <p class="intro">
+      El escenario <strong>Base</strong> son los datos que fijaste como referencia. El
+      <strong>Nuevo</strong> es lo que estas escribiendo ahora. Los escenarios <strong>Optimista</strong> y
+      <strong>Adverso</strong> se generan a partir de la referencia moviendo unicamente las variables que
+      toquen el porcentaje de esta tabla. Editalos si queres probar otra hipotesis: el motor usa la
+      misma funcion para los cuatro, asi que la comparacion siempre es coherente.
+    </p>
+
+    <div class="tarjeta">
+      <div class="tabla-envoltura">
+        <table id="tabla-deltas" class="pequena">
+          <caption>
+            Variacion porcentual sobre el escenario base. Un valor en cero deja la variable sin tocar.
+            El motor acota los resultados a los rangos validos y despues lo declara en la tabla de cambios.
+          </caption>
+        </table>
+      </div>
+      <div class="barra-acciones">
+        <button type="button" class="secundario pequeno" id="btn-deltas-restore">Restablecer los deltas de ejemplo</button>
+        <span class="nota" id="texto-deltas-aviso"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================== RESULTADO PRINCIPAL ======================= -->
+  <section class="seccion" id="resultado">
+    <h2><span class="num">3</span> Resultado principal
+      <span class="nota">Escenario Nuevo, tal como lo devuelve el motor</span></h2>
+    <div class="rejilla cinco" id="kpis"></div>
+    <div id="advertencias-principales" aria-live="polite"></div>
+  </section>
+
+  <!-- ============================ DESGLOSE DE COSTOS ====================== -->
+  <section class="seccion" id="desglose">
+    <h2><span class="num">4</span> Desglose de costos
+      <span class="nota">De donde sale cada numero del costo unitario</span></h2>
+    <div class="rejilla tres" id="kpis-desglose"></div>
+
+    <details open>
+      <summary>Detalle de calculos: variable de entrada + formula = resultado</summary>
+      <p class="nota">
+        Esta tabla es la respuesta a la pregunta "¿de donde salio este numero?". Cada fila muestra la
+        formula del documento y los operandos ya sustituidos. La genero el motor, no la IA.
+      </p>
+      <div class="tabla-envoltura">
+        <table id="tabla-trazabilidad" class="pequena pegajosa"></table>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============================== ESCENARIOS ============================= -->
+  <section class="seccion" id="escenarios">
+    <h2><span class="num">5</span> Comparacion de escenarios
+      <span class="nota">Los cuatro escenarios salen del mismo motor</span></h2>
+    <div class="tabla-envoltura">
+      <table id="tabla-escenarios" class="pequena"></table>
+    </div>
+    <div class="rejilla dos" style="margin-top:12px;">
+      <div class="tarjeta">
+        <h3 style="margin:0 0 6px;font-size:15px;color:var(--azul-osc);">Que variables se movio en cada escenario</h3>
+        <p class="nota" style="margin-top:0;">
+          Trazabilidad de los cambios. El motor declara exactamente que toco respecto de la referencia.
+        </p>
+        <div id="cambios-escenarios" style="margin-top:10px;"></div>
+      </div>
+      <div class="tarjeta">
+        <h3 style="margin:0 0 6px;font-size:15px;color:var(--azul-osc);">Variacion de la utilidad</h3>
+        <p class="nota" style="margin-top:0;">Impacto economico de cada escenario frente a la referencia.</p>
+        <div id="variacion-utilidad" style="margin-top:10px;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== GRAFICOS =============================== -->
+  <section class="seccion" id="graficos">
+    <h2><span class="num">6</span> Graficos
+      <span class="nota">El backend entrega los datos ya listos; aqui solo se dibujan</span></h2>
+
+    <div class="rejilla dos">
+      <div class="tarjeta tarjeta-grafico">
+        <h3>1. Comparacion de utilidad</h3>
+        <p class="sub">Base, Nuevo, Optimista y Adverso, en quetzales por periodo.</p>
+        <div class="lienzo"><canvas id="g-utilidad" aria-label="Grafico de utilidad por escenario" role="img"></canvas></div>
+      </div>
+      <div class="tarjeta tarjeta-grafico">
+        <h3>2. Sensibilidad por variable</h3>
+        <p class="sub">Variables ordenadas de mayor a menor impacto medido por el motor.</p>
+        <div class="lienzo"><canvas id="g-sensibilidad" aria-label="Grafico de sensibilidad" role="img"></canvas></div>
+      </div>
+      <div class="tarjeta tarjeta-grafico">
+        <h3>3. Comparacion de margen</h3>
+        <p class="sub">Margen de contribucion unitario en cada escenario.</p>
+        <div class="lienzo"><canvas id="g-margen" aria-label="Grafico de margen por escenario" role="img"></canvas></div>
+      </div>
+      <div class="tarjeta tarjeta-grafico">
+        <h3>4. Punto de equilibrio</h3>
+        <p class="sub">Volumen plan frente a las unidades necesarias para no perder dinero.</p>
+        <div class="lienzo"><canvas id="g-equilibrio" aria-label="Grafico de punto de equilibrio" role="img"></canvas></div>
+        <p class="nota" id="equilibrio-nota"></p>
+      </div>
+      <div class="tarjeta tarjeta-grafico">
+        <h3>5. Estructura del costo variable unitario</h3>
+        <p class="sub">Reparto del costo variable entre materia prima, mano de obra y CIF.</p>
+        <div class="lienzo"><canvas id="g-estructura" aria-label="Grafico de estructura de costos" role="img"></canvas></div>
+      </div>
+      <div class="tarjeta tarjeta-grafico">
+        <h3>6. Punto de equilibrio por escenario</h3>
+        <p class="sub">Cuantas unidades necesita cada escenario para cubrir los costos fijos.</p>
+        <div class="lienzo"><canvas id="g-equilibrio-escenarios" aria-label="Grafico de punto de equilibrio por escenario" role="img"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= SENSIBILIDAD =========================== -->
+  <section class="seccion" id="sensibilidad">
+    <h2><span class="num">7</span> Analisis de sensibilidad
+      <span class="nota">El impacto lo mide el motor. La IA solo lo interpreta.</span></h2>
+    <p class="intro">
+      Para cada variable el motor ejecuta el modelo dos veces mas: una con la variable subida y otra
+      con la variable bajada, manteniendo las otras ocho constantes. La diferencia de utilidad es el
+      impacto. Las variables quedan ordenadas de mayor a menor por ese numero.
+    </p>
+    <div class="tabla-envoltura">
+      <table id="tabla-sensibilidad" class="pequena"></table>
+    </div>
+    <div class="rejilla tres" id="kpis-sensibilidad" style="margin-top:12px;"></div>
+  </section>
+
+  <!-- ========================== ANALISIS DE IA ============================ -->
+  <section class="seccion" id="ia">
+    <h2><span class="num">8</span> Analisis de IA
+      <span class="nota">La IA interpreta resultados ya calculados. No calcula ninguno.</span></h2>
+    <p class="intro" id="ia-intro">Aun no se ha ejecutado ninguna simulacion.</p>
+
+    <div class="rejilla dos">
+      <div class="tarjeta bloque-ia">
+        <h3>Diagnostico</h3>
+        <div id="ia-diagnostico"><p class="nota">Pendiente de simulacion.</p></div>
+      </div>
+      <div class="tarjeta bloque-ia">
+        <h3>Variables criticas</h3>
+        <p class="nota">El orden lo fija el motor, no la IA. Se muestra el impacto medido junto a cada nombre.</p>
+        <div id="ia-criticas"><p class="nota">Pendiente de simulacion.</p></div>
+      </div>
+      <div class="tarjeta bloque-ia">
+        <h3>Acciones a simular</h3>
+        <p class="nota">Hasta tres cambios concretos, cada uno con la variable y la direccion.</p>
+        <div id="ia-acciones"><p class="nota">Pendiente de simulacion.</p></div>
+      </div>
+      <div class="tarjeta bloque-ia">
+        <h3>Riesgos y supuestos</h3>
+        <p class="nota">Lo que el modelo no sabe y lo que la IA no debe ocultar.</p>
+        <div id="ia-riesgos"><p class="nota">Pendiente de simulacion.</p></div>
+      </div>
+    </div>
+
+    <div class="rejilla dos" style="margin-top:12px;">
+      <div class="tarjeta">
+        <h3 style="margin:0 0 4px;font-size:15px;color:var(--azul-osc);">Auditoria de la respuesta</h3>
+        <p class="nota" style="margin-top:0;">
+          Todo dato generado por IA se valida antes de usarse. El backend busca cada monto citado en el
+          texto y comprueba que exista entre los resultados del motor.
+        </p>
+        <div id="ia-auditoria" style="margin-top:10px;"></div>
+      </div>
+      <div class="tarjeta">
+        <h3 style="margin:0 0 4px;font-size:15px;color:var(--azul-osc);">Bitacora de IA</h3>
+        <p class="nota" style="margin-top:0;">
+          Fecha, herramienta, para que se uso, salida y como se valido. Se exige en el manual.
+        </p>
+        <div id="ia-bitacora" style="margin-top:10px;"></div>
+      </div>
+    </div>
+
+    <details>
+      <summary>Ver exactamente que datos recibio la IA (estructura JSON)</summary>
+      <p class="nota">
+        Este es el JSON completo que el notebook le entrega al modelo. Se muestra sin modificar para que
+        el equipo pueda demostrar que la IA recibio resultados calculados y no variables libres.
+      </p>
+      <pre class="codigo" id="ia-payload">Todavia no se envio nada a la IA.</pre>
+    </details>
+  </section>
+
+  <!-- ============================== PRUEBAS =============================== -->
+  <section class="seccion" id="pruebas">
+    <h2><span class="num">9</span> Pruebas del prototipo
+      <span class="nota">Las cuatro pruebas obligatorias del documento, ejecutadas por el backend</span></h2>
+    <p class="intro">
+      Las pruebas no se ejecutan en el navegador: las corre el motor de Python y se comparan contra la
+      hoja de control. Cada prueba devuelve el detalle de cada comprobacion, para poder defender el
+      resultado linea por linea.
+    </p>
+    <div class="barra-acciones">
+      <button type="button" id="btn-pruebas">Ejecutar las pruebas en Google Colab</button>
+      <span class="estado" id="estado-pruebas" role="status" aria-live="polite">
+        <span class="punto" aria-hidden="true"></span><span id="texto-estado-pruebas">Sin ejecutar</span>
+      </span>
+    </div>
+    <div id="resultado-pruebas"></div>
+  </section>
+
+  <!-- ============================== HOJA DE CONTROL ======================= -->
+  <section class="seccion" id="hoja">
+    <h2><span class="num">10</span> Hoja de control y exactitud</h2>
+    <p class="intro" id="hoja-intro">
+      El manual exige una hoja de calculo independiente que replique las mismas formulas. Esa hoja es la
+      referencia contra la que se comprueba el motor.
+    </p>
+    <div class="rejilla tres" id="kpis-exactitud"></div>
+    <details>
+      <summary>Formulas de la hoja de control, celda por celda</summary>
+      <p class="nota">
+        Diseno de la hoja: columna A = nombre, columna B = valor, columna C = formula. Entradas en
+        B2 a B10. Estas formulas se pueden copiar tal cual en Excel o Google Sheets.
+      </p>
+      <div class="tabla-envoltura"><table id="tabla-formulas" class="pequena"></table></div>
+    </details>
+  </section>
+
+  <!-- ============================== METRICAS ============================== -->
+  <section class="seccion" id="metricas">
+    <h2><span class="num">11</span> Metricas del prototipo</h2>
+    <p class="intro">
+      Las cinco metricas de impacto que sugiere el manual. Todas salen de numeros ya calculados.
+    </p>
+    <div class="rejilla tres" id="kpis-metricas"></div>
+  </section>
+
+  <!-- ============================== BITACORA ============================== -->
+  <section class="seccion" id="bitacora">
+    <h2><span class="num">12</span> Bitacora de uso de la IA</h2>
+    <p class="intro">
+      El manual pide registrar que hizo la IA, que hizo el codigo y que decidio una persona. La
+      plantilla de la bitacora esta en <code>docs/bitacora_ia.md</code> y el backend guarda
+      automaticamente cada llamada que se hace durante la demo.
+    </p>
+    <ol class="pasos">
+      <li><strong>El motor de Python calcula.</strong> Las nueve formulas del documento, los cuatro
+        escenarios, la sensibilidad y las metricas. Es codigo auditable.</li>
+      <li><strong>La IA interpreta.</strong> Recibe un JSON con resultados ya calculados y devuelve
+        diagnostico, variables criticas, acciones y riesgos. No puede cambiar ningun numero.</li>
+      <li><strong>La persona decide.</strong> Que escenario se simula, que deltas se aplican y si la
+        recomendacion de la IA se acepta o se descarta.</li>
+      <li><strong>La hoja de control valida.</strong> Cada prueba compara motor contra hoja con una
+        tolerancia de 0.000001.</li>
+    </ol>
+  </section>
+
+  <!-- ============================== LIMITACIONES ========================== -->
+  <section class="seccion" id="limitaciones">
+    <h2><span class="num">13</span> Supuestos, limitaciones y reglas del juego</h2>
+    <div class="rejilla dos">
+      <div class="tarjeta">
+        <h3 style="margin:0 0 6px;font-size:15px;color:var(--azul-osc);">Lo que el modelo NO hace</h3>
+        <ul style="margin:0;padding-left:20px;font-size:13.5px;">
+          <li>No predice la demanda: el volumen es un dato que ingresa el usuario.</li>
+          <li>No considera inventario, fluteo, impuestos, financiamiento ni moneda extranjera.</li>
+          <li>No descompone el consumo en componentes: el material es una sola cifra.</li>
+          <li>No conoce la capacidad instalada ni los tiempos de entrega.</li>
+          <li>No hay dos productos: es un gemelo de una sola operacion.</li>
+        </ul>
+      </div>
+      <div class="tarjeta">
+        <h3 style="margin:0 0 6px;font-size:15px;color:var(--azul-osc);">Lo que la IA NO puede hacer</h3>
+        <ul style="margin:0;padding-left:20px;font-size:13.5px;">
+          <li>No calcula costos, margen, punto de equilibrio ni utilidad.</li>
+          <li>No inventa precios, consumos ni volumenes para completar el modelo.</li>
+          <li>No decide que variable es critica: eso lo mide el motor.</li>
+          <li>No afirma que una alternativa es optima sin compararla numericamente.</li>
+          <li>Si falta un dato, dice que le falta: no lo suple.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="aviso info" style="margin-top:12px;">
+      <span class="titulo">Reglas de trabajo con IA que el proyecto respeta</span>
+      <ul>
+        <li>La IA tiene una funcion concreta: interpretar sensibilidad y proponer alternativas medibles.</li>
+        <li>Los calculos centrales son reproducibles con formulas, codigo y la hoja de control.</li>
+        <li>Todo dato generado por IA se valida antes de utilisarse, y la validacion se muestra.</li>
+        <li>No se usan datos personales, confidenciales ni informacion real de ninguna empresa.</li>
+        <li>Un resultado generado por IA no se acepta como evidencia tecnica si el equipo no puede
+          explicar y validar como se obtuvo.</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="pie">
+    <div class="rejilla dos">
+      <div>
+        <h3>SmartCost AI</h3>
+        <p>
+          Prototipo de la Feria de Innovacion 2026 para Ingenieria de Costos. El motor de calculo son
+          las nueve formulas del documento, programadas en Python. La IA interpreta resultados ya
+          calculados y nunca los sustituye.
+        </p>
+      </div>
+      <div class="no-imprimir">
+        <h3>Archivos del proyecto</h3>
+        <p>
+          <code>SmartCost_AI.ipynb</code> (notebook de Colab), <code>colab/</code> (modulos del motor),
+          <code>docs/</code> (hoja de control, bitacora, formulas), <code>tools/</code> (utilidades de
+          verificacion). Instructivo completo en <code>README.md</code>.
+        </p>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
