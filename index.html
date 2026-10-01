@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modelo de Costos y Sincronización con Colab</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 1. LIBRERÍA DE GRÁFICAS (Chart.js) -->
+    <!-- LIBRERÍA DE GRÁFICAS (Chart.js) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-gray-50 min-h-screen py-10 px-4">
@@ -65,21 +65,6 @@
                 <input type="number" step="0.01" id="precio_venta" name="precio_venta" value="120.00" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
             </div>
 
-            <!-- Configuración GitHub -->
-            <div class="md:col-span-2 border-t pt-4 mt-2">
-                <h3 class="text-lg font-medium text-gray-800 mb-3">Conexión con GitHub y Google Colab</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">GitHub Personal Access Token (PAT)</label>
-                        <input type="password" id="github_token" placeholder="ghp_xxxxxxxxxxxx" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Nombre del archivo JSON</label>
-                        <input type="text" id="filename" value="costos_data.json" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
-                    </div>
-                </div>
-            </div>
-
             <!-- Botón Calcular -->
             <div class="md:col-span-2 flex flex-col sm:flex-row justify-between items-center gap-4 mt-4">
                 <button type="button" id="calcBtn" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-md shadow transition duration-200 cursor-pointer">
@@ -107,7 +92,7 @@
                 </div>
             </div>
 
-            <!-- 2. CONTENEDOR Y CANVAS PARA LA GRÁFICA -->
+            <!-- CONTENEDOR Y CANVAS PARA LA GRÁFICA -->
             <div class="mt-6 bg-white p-4 rounded-lg shadow-sm border">
                 <h3 class="text-md font-bold text-gray-700 mb-3 text-center">Comparativa de Escenarios de Sensibilidad</h3>
                 <canvas id="scenarioChart" width="400" height="180"></canvas>
@@ -122,6 +107,11 @@
     </div>
 
     <script>
+        // --- CONFIGURACIÓN FIJA DE GITHUB ---
+        const GITHUB_TOKEN = "ghp_tu_token_aqui"; // Reemplaza con tu Personal Access Token real
+        const FILENAME = "costos_data.json";
+        // ------------------------------------
+
         let myChart = null; // Variable global para controlar la gráfica
 
         function calcularModelo(p) {
@@ -162,16 +152,12 @@
             document.getElementById('res_pe').textContent = `${resBase.puntoEquilibrio} un.`;
             document.getElementById('results').classList.remove('hidden');
 
-            // --- 3. SIMULACIÓN DE LOS 4 ESCENARIOS PARA LA GRÁFICA ---
-            // Escenario 1: Base
+            // SIMULACIÓN DE LOS 4 ESCENARIOS PARA LA GRÁFICA
             const r1 = resBase;
-            // Escenario 2: Materia Prima +12%
             let pMP = {...baseData, precio_material: baseData.precio_material * 1.12};
             const r2 = calcularModelo(pMP);
-            // Escenario 3: Desperdicio 9%
             let pDesp = {...baseData, desperdicio: 9.0};
             const r3 = calcularModelo(pDesp);
-            // Escenario 4: Extremo (Margen menor o igual a 0)
             let pExt = {...baseData, precio_venta: baseData.precio_venta * 0.65};
             const r4 = calcularModelo(pExt);
 
@@ -179,10 +165,9 @@
             const utilidades = [r1.utilidad, r2.utilidad, r3.utilidad, r4.utilidad];
             const costosUnitarios = [r1.costoUnitario, r2.costoUnitario, r3.costoUnitario, r4.costoUnitario];
 
-            // Renderizar o actualizar la gráfica con Chart.js
             const ctx = document.getElementById('scenarioChart').getContext('2d');
             if (myChart) {
-                myChart.destroy(); // Destruye la gráfica anterior si ya existía para evitar solapamientos
+                myChart.destroy();
             }
 
             myChart = new Chart(ctx, {
@@ -227,13 +212,10 @@
                 }
             });
 
-            // Lógica de sincronización con GitHub y Gist
-            const token = document.getElementById('github_token').value.trim();
-            const filename = document.getElementById('filename').value.trim() || 'costos_data.json';
             const statusMsg = document.getElementById('statusMessage');
 
-            if (!token) {
-                statusMsg.textContent = 'Cálculo local y gráfica generados. (Introduce tu Token de GitHub para sincronizar)';
+            if (!GITHUB_TOKEN || GITHUB_TOKEN === "ghp_tu_token_aqui") {
+                statusMsg.textContent = 'Cálculo local y gráfica generados. (Configura tu GITHUB_TOKEN en el código para sincronizar)';
                 statusMsg.className = 'text-sm text-amber-600 font-medium';
                 return;
             }
@@ -246,7 +228,7 @@
                     description: "Datos de Costos Industriales - Verificables y Simulaciones",
                     public: false,
                     files: {
-                        [filename]: {
+                        [FILENAME]: {
                             content: JSON.stringify(baseData, null, 2)
                         }
                     }
@@ -255,7 +237,7 @@
                 const response = await fetch('https://api.github.com/gists', {
                     method: 'POST',
                     headers: {
-                        'Authorization': `token ${token}`,
+                        'Authorization': `token ${GITHUB_TOKEN}`,
                         'Accept': 'application/vnd.github.v3+json',
                         'Content-Type': 'application/json'
                     },
@@ -267,7 +249,7 @@
                 }
 
                 const gistResult = await response.json();
-                const rawUrl = gistResult.files[filename].raw_url;
+                const rawUrl = gistResult.files[FILENAME].raw_url;
 
                 statusMsg.textContent = '¡Enviado a GitHub con éxito!';
                 statusMsg.className = 'text-sm text-green-600 font-medium';
