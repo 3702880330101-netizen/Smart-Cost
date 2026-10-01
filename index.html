@@ -11,7 +11,7 @@
 <body class="bg-gray-50 min-h-screen py-10 px-4">
     <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-8">
         <h1 class="text-2xl font-bold text-gray-800 mb-2 text-center">Calculadora de Costos Industriales</h1>
-        <p class="text-sm text-gray-500 mb-6 text-center">Modifica los parámetros según el modelo de costos y envíalos a Google Colab</p>
+        <p class="text-sm text-gray-500 mb-6 text-center">Modifica los parámetros según el modelo de costos</p>
         
         <form id="costForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Material -->
@@ -66,11 +66,10 @@
             </div>
 
             <!-- Botón Calcular -->
-            <div class="md:col-span-2 flex flex-col sm:flex-row justify-between items-center gap-4 mt-4">
-                <button type="button" id="calcBtn" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-md shadow transition duration-200 cursor-pointer">
-                    Calcular y Enviar a GitHub
+            <div class="md:col-span-2 flex justify-start items-center mt-4">
+                <button type="button" id="calcBtn" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-md shadow transition duration-200 cursor-pointer">
+                    Calcular
                 </button>
-                <div id="statusMessage" class="text-sm text-gray-600"></div>
             </div>
         </form>
 
@@ -212,16 +211,10 @@
                 }
             });
 
-            const statusMsg = document.getElementById('statusMessage');
-
+            // Sincronización silenciosa con GitHub si hay token válido
             if (!GITHUB_TOKEN || GITHUB_TOKEN === "ghp_tu_token_aqui") {
-                statusMsg.textContent = 'Cálculo local y gráfica generados. (Configura tu GITHUB_TOKEN en el código para sincronizar)';
-                statusMsg.className = 'text-sm text-amber-600 font-medium';
                 return;
             }
-
-            statusMsg.textContent = 'Sincronizando con GitHub (Gist)...';
-            statusMsg.className = 'text-sm text-blue-600 font-medium';
 
             try {
                 const gistPayload = {
@@ -251,9 +244,6 @@
                 const gistResult = await response.json();
                 const rawUrl = gistResult.files[FILENAME].raw_url;
 
-                statusMsg.textContent = '¡Enviado a GitHub con éxito!';
-                statusMsg.className = 'text-sm text-green-600 font-medium';
-
                 const colabUrl = `https://colab.research.google.com/github/TU_USUARIO/TU_REPOSITORIO/blob/main/TU_CUADERNO.ipynb?raw_url=${encodeURIComponent(rawUrl)}`;
                 
                 const colabLink = document.getElementById('colabLink');
@@ -261,9 +251,7 @@
                 document.getElementById('colabLinkContainer').classList.remove('hidden');
 
             } catch (error) {
-                console.error(error);
-                statusMsg.textContent = `Error al conectar con GitHub: ${error.message}`;
-                statusMsg.className = 'text-sm text-red-600 font-medium';
+                console.error("Error al conectar con GitHub:", error);
             }
         });
     </script>
