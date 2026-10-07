@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modelo de Costos y Sincronización con Colab</title>
+    <title>Modelo de Costos, Sensibilidad y Conclusiones Gerenciales</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- LIBRERÍA DE GRÁFICAS (Chart.js) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-gray-50 min-h-screen py-10 px-4">
-    <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-8">
-        <h1 class="text-2xl font-bold text-gray-800 mb-2 text-center">Calculadora de Costos Industriales</h1>
-        <p class="text-sm text-gray-500 mb-6 text-center">Modifica los parámetros según el modelo de costos</p>
+    <div class="max-w-5xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2 text-center">Modelo de Costos Industriales y IA Gerencial</h1>
+        <p class="text-sm text-gray-500 mb-6 text-center">Modifica los parámetros para actualizar el análisis financiero, la priorización de variables y la sincronización con GitHub / Colab.</p>
         
         <form id="costForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Material -->
@@ -68,7 +68,7 @@
             <!-- Botón Calcular -->
             <div class="md:col-span-2 flex justify-start items-center mt-4">
                 <button type="button" id="calcBtn" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-md shadow transition duration-200 cursor-pointer">
-                    Calcular
+                    Calcular y Sincronizar
                 </button>
             </div>
         </form>
@@ -82,7 +82,7 @@
                     <p id="res_costo_unit" class="text-lg font-bold text-indigo-600">$0.00</p>
                 </div>
                 <div class="bg-white p-4 rounded shadow-sm border">
-                    <p class="text-sm text-gray-500">Utilidad</p>
+                    <p class="text-sm text-gray-500">Utilidad Total</p>
                     <p id="res_utilidad" class="text-lg font-bold text-green-600">$0.00</p>
                 </div>
                 <div class="bg-white p-4 rounded shadow-sm border">
@@ -97,9 +97,56 @@
                 <canvas id="scenarioChart" width="400" height="180"></canvas>
             </div>
 
+            <!-- NUEVAS TABLAS Y SECCIONES DE ANÁLISIS AGREGADAS -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <!-- Tabla de Priorización de Variables -->
+                <div class="bg-white p-4 rounded-lg shadow-sm border">
+                    <h3 class="text-md font-bold text-gray-700 mb-3">Priorización de Variables (Impacto por +10%)</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-sm text-left text-gray-500">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                                <tr>
+                                    <th class="py-2 px-3">Variable</th>
+                                    <th class="py-2 px-3">Impacto en Utilidad ($)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="prioritizationTableBody">
+                                <!-- Dinámico -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Comparativa de Escenarios de Mejora -->
+                <div class="bg-white p-4 rounded-lg shadow-sm border">
+                    <h3 class="text-md font-bold text-gray-700 mb-3">Escenarios de Mejora Sugeridos</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-sm text-left text-gray-500">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                                <tr>
+                                    <th class="py-2 px-3">Escenario</th>
+                                    <th class="py-2 px-3">Utilidad Total ($)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="scenariosTableBody">
+                                <!-- Dinámico -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conclusiones Gerenciales Automatizadas -->
+            <div class="mt-6 bg-white p-5 rounded-lg shadow-sm border">
+                <h3 class="text-md font-bold text-gray-800 mb-2">Conclusiones y Reporte Gerencial</h3>
+                <div id="gerencialReport" class="text-sm text-gray-600 space-y-2">
+                    <!-- Dinámico -->
+                </div>
+            </div>
+
             <div id="colabLinkContainer" class="mt-6 text-center hidden">
                 <a id="colabLink" href="#" target="_blank" class="inline-block bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded shadow transition">
-                    Abrir Google Colab con estos datos
+                    Abrir Google Colab con estos datos sincronizados
                 </a>
             </div>
         </div>
@@ -151,7 +198,61 @@
             document.getElementById('res_pe').textContent = `${resBase.puntoEquilibrio} un.`;
             document.getElementById('results').classList.remove('hidden');
 
-            // SIMULACIÓN DE LOS 4 ESCENARIOS PARA LA GRÁFICA
+            // --- PRIORIZACIÓN DE VARIABLES (+10% de cambio) ---
+            const variablesAProbar = ['precio_venta', 'precio_material', 'volumen', 'desperdicio', 'horas_mod', 'costos_fijos'];
+            let impactos = [];
+            
+            variablesAProbar.forEach(varName => {
+                let pMod = {...baseData};
+                pMod[varName] = pMod[varName] * 1.10;
+                let resMod = calcularModelo(pMod);
+                impactos.push({
+                    variable: varName,
+                    impacto: resMod.utilidad - resBase.utilidad
+                });
+            });
+
+            // Ordenar de mayor a menor impacto absoluto o directo
+            impactos.sort((a, b) => Math.abs(b.impacto) - Math.abs(a.impacto));
+
+            let priorTableHTML = "";
+            impactos.forEach(item => {
+                priorTableHTML += `<tr class="border-b"><td class="py-2 px-3 font-medium">${item.variable}</td><td class="py-2 px-3">$${item.impacto.toFixed(2)}</td></tr>`;
+            });
+            document.getElementById('prioritizationTableBody').innerHTML = priorTableHTML;
+
+            // --- SIMULACIÓN DE ESCENARIOS DE MEJORA ---
+            let escenarios = [
+                { nombre: "Base Actual", params: baseData },
+                { nombre: "Reducción de Desperdicio (2%)", params: {...baseData, desperdicio: 2.0} },
+                { nombre: "Optimización MP (-5% Precio)", params: {...baseData, precio_material: baseData.precio_material * 0.95} },
+                { nombre: "Aumento de Volumen (+5%)", params: {...baseData, volumen: Math.round(baseData.volumen * 1.05)} }
+            ];
+
+            let scenariosTableHTML = "";
+            let mejorUtilidad = -Infinity;
+            let mejorNombreEscenario = "";
+
+            escenarios.forEach(esc => {
+                let resEsc = calcularModelo(esc.params);
+                if (resEsc.utilidad > mejorUtilidad) {
+                    mejorUtilidad = resEsc.utilidad;
+                    mejorNombreEscenario = esc.nombre;
+                }
+                scenariosTableHTML += `<tr class="border-b"><td class="py-2 px-3 font-medium">${esc.nombre}</td><td class="py-2 px-3 text-green-600 font-bold">$${resEsc.utilidad.toFixed(2)}</td></tr>`;
+            });
+            document.getElementById('scenariosTableBody').innerHTML = scenariosTableHTML;
+
+            // --- CONCLUSIONES GERENCIALES AUTOMATIZADAS ---
+            let variableClave = impactos[0].variable;
+            let reportHTML = `
+                <p><strong>1. Sensibilidad y Prioridad:</strong> La variable con mayor impacto cuantitativo en la utilidad es <em>'${variableClave}'</em>. Se recomienda enfocar los esfuerzos de negociación y control prioritariamente en este factor.</p>
+                <p><strong>2. Umbral Operativo:</strong> Se requiere un volumen mínimo de ventas de <strong>${resBase.puntoEquilibrio} unidades</strong> para alcanzar el punto de equilibrio y cubrir los costos fijos totales de $${baseData.costos_fijos.toFixed(2)}.</p>
+                <p><strong>3. Rendimiento Óptimo:</strong> El escenario proyectado más favorable es <em>'${mejorNombreEscenario}'</em>, maximizando la rentabilidad del periodo.</p>
+            `;
+            document.getElementById('gerencialReport').innerHTML = reportHTML;
+
+            // --- GRÁFICA DE SENSIBILIDAD ---
             const r1 = resBase;
             let pMP = {...baseData, precio_material: baseData.precio_material * 1.12};
             const r2 = calcularModelo(pMP);
@@ -211,7 +312,7 @@
                 }
             });
 
-            // Sincronización silenciosa con GitHub si hay token válido
+            // Sincronización con GitHub (Gist)
             if (!GITHUB_TOKEN || GITHUB_TOKEN === "ghp_tu_token_aqui") {
                 return;
             }
@@ -244,6 +345,7 @@
                 const gistResult = await response.json();
                 const rawUrl = gistResult.files[FILENAME].raw_url;
 
+                // Reemplaza "TU_USUARIO" y "TU_REPOSITORIO" con los datos reales de tu cuaderno Colab en GitHub
                 const colabUrl = `https://colab.research.google.com/github/TU_USUARIO/TU_REPOSITORIO/blob/main/TU_CUADERNO.ipynb?raw_url=${encodeURIComponent(rawUrl)}`;
                 
                 const colabLink = document.getElementById('colabLink');
