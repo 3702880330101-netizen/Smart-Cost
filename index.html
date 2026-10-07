@@ -75,7 +75,13 @@
 
         <!-- Resultados -->
         <div id="results" class="mt-8 border-t pt-6 bg-gray-50 p-6 rounded-lg hidden">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">Resultados Verificables</h2>
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
+                <h2 class="text-xl font-bold text-gray-800">Resultados Verificables</h2>
+                <button type="button" onclick="window.print()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md shadow transition duration-200 flex items-center gap-2">
+                    📄 Descargar Modelo en PDF
+                </button>
+            </div>
+
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
                 <div class="bg-white p-4 rounded shadow-sm border">
                     <p class="text-sm text-gray-500">Costo Unitario</p>
@@ -91,9 +97,9 @@
                 </div>
             </div>
 
-            <!-- CONTENEDOR Y CANVAS PARA LA GRÁFICA -->
+            <!-- CONTENEDOR Y CANVAS PARA LA GRÁFICA DE BARRAS -->
             <div class="mt-6 bg-white p-4 rounded-lg shadow-sm border">
-                <h3 class="text-md font-bold text-gray-700 mb-3 text-center">Comparativa de Escenarios de Sensibilidad</h3>
+                <h3 class="text-md font-bold text-gray-700 mb-3 text-center">Comparativa de Escenarios de Sensibilidad (Barras)</h3>
                 <canvas id="scenarioChart" width="400" height="180"></canvas>
             </div>
 
@@ -251,7 +257,7 @@
             `;
             document.getElementById('gerencialReport').innerHTML = reportHTML;
 
-            // --- GRÁFICA DE SENSIBILIDAD ---
+            // --- GRÁFICA EXCLUSIVAMENTE DE BARRAS ---
             const r1 = resBase;
             let pMP = {...baseData, precio_material: baseData.precio_material * 1.12};
             const r2 = calcularModelo(pMP);
@@ -270,7 +276,7 @@
             }
 
             myChart = new Chart(ctx, {
-                type: 'bar',
+                type: 'bar', // Tipo barra para ambos conjuntos de datos
                 data: {
                     labels: etiquetas,
                     datasets: [
@@ -285,10 +291,9 @@
                         {
                             label: 'Costo Unitario (Q)',
                             data: costosUnitarios,
-                            type: 'line',
+                            backgroundColor: 'rgba(255, 99, 132, 0.6)',
                             borderColor: 'rgba(255, 99, 132, 1)',
-                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                            borderWidth: 2,
+                            borderWidth: 1,
                             yAxisID: 'y1'
                         }
                     ]
