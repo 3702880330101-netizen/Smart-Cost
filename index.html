@@ -17,52 +17,52 @@
             <!-- Material -->
             <div>
                 <label class="block text-sm font-medium text-gray-700">Material (Descripción)</label>
-                <input type="text" id="material" name="material" value="Acero Inoxidable" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2 focus:ring-indigo-500 focus:border-indigo-500">
+                <input type="text" id="material" name="material" placeholder="Ej. Acero Inoxidable" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2 focus:ring-indigo-500 focus:border-indigo-500">
             </div>
             <!-- Consumo estándar -->
             <div>
                 <label class="block text-sm font-medium text-gray-700">Consumo estándar</label>
-                <input type="number" step="0.01" id="consumo_estandar" name="consumo_estandar" value="1.0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
+                <input type="number" step="0.01" id="consumo_estandar" name="consumo_estandar" placeholder="" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
             </div>
             <!-- Precio material -->
             <div>
-                <label class="block text-sm font-medium text-gray-700">Precio del material ($)</label>
-                <input type="number" step="0.01" id="precio_material" name="precio_material" value="50.00" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
+                <label class="block text-sm font-medium text-gray-700">Precio del material (Q)</label>
+                <input type="number" step="0.01" id="precio_material" name="precio_material" placeholder="" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
             </div>
             <!-- Desperdicio -->
             <div>
                 <label class="block text-sm font-medium text-gray-700">Desperdicio (%)</label>
-                <input type="number" step="0.1" id="desperdicio" name="desperdicio" value="5.0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
+                <input type="number" step="0.1" id="desperdicio" name="desperdicio" placeholder="" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
             </div>
             <!-- Horas MOD -->
             <div>
                 <label class="block text-sm font-medium text-gray-700">Horas MOD</label>
-                <input type="number" step="0.1" id="horas_mod" name="horas_mod" value="2.5" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
+                <input type="number" step="0.1" id="horas_mod" name="horas_mod" placeholder="" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
             </div>
             <!-- Tarifa MOD -->
             <div>
-                <label class="block text-sm font-medium text-gray-700">Tarifa MOD ($/hora)</label>
-                <input type="number" step="0.01" id="tarifa_mod" name="tarifa_mod" value="15.00" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
+                <label class="block text-sm font-medium text-gray-700">Tarifa MOD (Q/hora)</label>
+                <input type="number" step="0.01" id="tarifa_mod" name="tarifa_mod" placeholder="" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
             </div>
             <!-- CIF variable -->
             <div>
-                <label class="block text-sm font-medium text-gray-700">CIF variable ($)</label>
-                <input type="number" step="0.01" id="cif_variable" name="cif_variable" value="10.00" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
+                <label class="block text-sm font-medium text-gray-700">CIF variable (Q)</label>
+                <input type="number" step="0.01" id="cif_variable" name="cif_variable" placeholder="" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
             </div>
             <!-- Costos fijos -->
             <div>
-                <label class="block text-sm font-medium text-gray-700">Costos fijos ($ totales)</label>
-                <input type="number" step="0.01" id="costos_fijos" name="costos_fijos" value="5000.00" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
+                <label class="block text-sm font-medium text-gray-700">Costos fijos (Q totales)</label>
+                <input type="number" step="0.01" id="costos_fijos" name="costos_fijos" placeholder="" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
             </div>
             <!-- Volumen -->
             <div>
                 <label class="block text-sm font-medium text-gray-700">Volumen / Unidades producidas</label>
-                <input type="number" id="volumen" name="volumen" value="1000" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
+                <input type="number" id="volumen" name="volumen" placeholder="" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
             </div>
             <!-- Precio venta -->
             <div>
-                <label class="block text-sm font-medium text-gray-700">Precio de venta unitario ($)</label>
-                <input type="number" step="0.01" id="precio_venta" name="precio_venta" value="120.00" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
+                <label class="block text-sm font-medium text-gray-700">Precio de venta unitario (Q)</label>
+                <input type="number" step="0.01" id="precio_venta" name="precio_venta" placeholder="" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
             </div>
 
             <!-- Botón Calcular -->
@@ -79,11 +79,11 @@
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
                 <div class="bg-white p-4 rounded shadow-sm border">
                     <p class="text-sm text-gray-500">Costo Unitario</p>
-                    <p id="res_costo_unit" class="text-lg font-bold text-indigo-600">$0.00</p>
+                    <p id="res_costo_unit" class="text-lg font-bold text-indigo-600">Q0.00</p>
                 </div>
                 <div class="bg-white p-4 rounded shadow-sm border">
                     <p class="text-sm text-gray-500">Utilidad Total</p>
-                    <p id="res_utilidad" class="text-lg font-bold text-green-600">$0.00</p>
+                    <p id="res_utilidad" class="text-lg font-bold text-green-600">Q0.00</p>
                 </div>
                 <div class="bg-white p-4 rounded shadow-sm border">
                     <p class="text-sm text-gray-500">Punto de Equilibrio (u.)</p>
@@ -97,7 +97,7 @@
                 <canvas id="scenarioChart" width="400" height="180"></canvas>
             </div>
 
-            <!-- NUEVAS TABLAS Y SECCIONES DE ANÁLISIS AGREGADAS -->
+            <!-- TABLAS Y SECCIONES DE ANÁLISIS -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <!-- Tabla de Priorización de Variables -->
                 <div class="bg-white p-4 rounded-lg shadow-sm border">
@@ -107,7 +107,7 @@
                             <thead class="text-xs text-gray-700 uppercase bg-gray-100">
                                 <tr>
                                     <th class="py-2 px-3">Variable</th>
-                                    <th class="py-2 px-3">Impacto en Utilidad ($)</th>
+                                    <th class="py-2 px-3">Impacto en Utilidad (Q)</th>
                                 </tr>
                             </thead>
                             <tbody id="prioritizationTableBody">
@@ -125,7 +125,7 @@
                             <thead class="text-xs text-gray-700 uppercase bg-gray-100">
                                 <tr>
                                     <th class="py-2 px-3">Escenario</th>
-                                    <th class="py-2 px-3">Utilidad Total ($)</th>
+                                    <th class="py-2 px-3">Utilidad Total (Q)</th>
                                 </tr>
                             </thead>
                             <tbody id="scenariosTableBody">
@@ -176,7 +176,7 @@
 
         document.getElementById('calcBtn').addEventListener('click', async () => {
             const baseData = {
-                material: document.getElementById('material').value,
+                material: document.getElementById('material').value || "Sin especificar",
                 consumo_estandar: parseFloat(document.getElementById('consumo_estandar').value) || 0,
                 precio_material: parseFloat(document.getElementById('precio_material').value) || 0,
                 desperdicio: parseFloat(document.getElementById('desperdicio').value) || 0,
@@ -192,9 +192,9 @@
             // Cálculo Base actual
             const resBase = calcularModelo(baseData);
 
-            // Mostrar resultados principales en pantalla
-            document.getElementById('res_costo_unit').textContent = `$${resBase.costoUnitario.toFixed(2)}`;
-            document.getElementById('res_utilidad').textContent = `$${resBase.utilidad.toFixed(2)}`;
+            // Mostrar resultados principales en pantalla con Quetzales
+            document.getElementById('res_costo_unit').textContent = `Q${resBase.costoUnitario.toFixed(2)}`;
+            document.getElementById('res_utilidad').textContent = `Q${resBase.utilidad.toFixed(2)}`;
             document.getElementById('res_pe').textContent = `${resBase.puntoEquilibrio} un.`;
             document.getElementById('results').classList.remove('hidden');
 
@@ -212,12 +212,11 @@
                 });
             });
 
-            // Ordenar de mayor a menor impacto absoluto o directo
             impactos.sort((a, b) => Math.abs(b.impacto) - Math.abs(a.impacto));
 
             let priorTableHTML = "";
             impactos.forEach(item => {
-                priorTableHTML += `<tr class="border-b"><td class="py-2 px-3 font-medium">${item.variable}</td><td class="py-2 px-3">$${item.impacto.toFixed(2)}</td></tr>`;
+                priorTableHTML += `<tr class="border-b"><td class="py-2 px-3 font-medium">${item.variable}</td><td class="py-2 px-3">Q${item.impacto.toFixed(2)}</td></tr>`;
             });
             document.getElementById('prioritizationTableBody').innerHTML = priorTableHTML;
 
@@ -239,7 +238,7 @@
                     mejorUtilidad = resEsc.utilidad;
                     mejorNombreEscenario = esc.nombre;
                 }
-                scenariosTableHTML += `<tr class="border-b"><td class="py-2 px-3 font-medium">${esc.nombre}</td><td class="py-2 px-3 text-green-600 font-bold">$${resEsc.utilidad.toFixed(2)}</td></tr>`;
+                scenariosTableHTML += `<tr class="border-b"><td class="py-2 px-3 font-medium">${esc.nombre}</td><td class="py-2 px-3 text-green-600 font-bold">Q${resEsc.utilidad.toFixed(2)}</td></tr>`;
             });
             document.getElementById('scenariosTableBody').innerHTML = scenariosTableHTML;
 
@@ -247,7 +246,7 @@
             let variableClave = impactos[0].variable;
             let reportHTML = `
                 <p><strong>1. Sensibilidad y Prioridad:</strong> La variable con mayor impacto cuantitativo en la utilidad es <em>'${variableClave}'</em>. Se recomienda enfocar los esfuerzos de negociación y control prioritariamente en este factor.</p>
-                <p><strong>2. Umbral Operativo:</strong> Se requiere un volumen mínimo de ventas de <strong>${resBase.puntoEquilibrio} unidades</strong> para alcanzar el punto de equilibrio y cubrir los costos fijos totales de $${baseData.costos_fijos.toFixed(2)}.</p>
+                <p><strong>2. Umbral Operativo:</strong> Se requiere un volumen mínimo de ventas de <strong>${resBase.puntoEquilibrio} unidades</strong> para alcanzar el punto de equilibrio y cubrir los costos fijos totales de Q${baseData.costos_fijos.toFixed(2)}.</p>
                 <p><strong>3. Rendimiento Óptimo:</strong> El escenario proyectado más favorable es <em>'${mejorNombreEscenario}'</em>, maximizando la rentabilidad del periodo.</p>
             `;
             document.getElementById('gerencialReport').innerHTML = reportHTML;
@@ -276,7 +275,7 @@
                     labels: etiquetas,
                     datasets: [
                         {
-                            label: 'Utilidad Total ($)',
+                            label: 'Utilidad Total (Q)',
                             data: utilidades,
                             backgroundColor: 'rgba(54, 162, 235, 0.6)',
                             borderColor: 'rgba(54, 162, 235, 1)',
@@ -284,7 +283,7 @@
                             yAxisID: 'y'
                         },
                         {
-                            label: 'Costo Unitario ($)',
+                            label: 'Costo Unitario (Q)',
                             data: costosUnitarios,
                             type: 'line',
                             borderColor: 'rgba(255, 99, 132, 1)',
@@ -300,13 +299,13 @@
                         y: {
                             type: 'linear',
                             position: 'left',
-                            title: { display: true, text: 'Utilidad ($)' }
+                            title: { display: true, text: 'Utilidad (Q)' }
                         },
                         y1: {
                             type: 'linear',
                             position: 'right',
                             grid: { drawOnChartArea: false },
-                            title: { display: true, text: 'Costo Unitario ($)' }
+                            title: { display: true, text: 'Costo Unitario (Q)' }
                         }
                     }
                 }
@@ -345,7 +344,6 @@
                 const gistResult = await response.json();
                 const rawUrl = gistResult.files[FILENAME].raw_url;
 
-                // Reemplaza "TU_USUARIO" y "TU_REPOSITORIO" con los datos reales de tu cuaderno Colab en GitHub
                 const colabUrl = `https://colab.research.google.com/github/TU_USUARIO/TU_REPOSITORIO/blob/main/TU_CUADERNO.ipynb?raw_url=${encodeURIComponent(rawUrl)}`;
                 
                 const colabLink = document.getElementById('colabLink');
