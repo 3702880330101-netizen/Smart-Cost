@@ -127,6 +127,17 @@
             <div class="mt-6 bg-white p-4 rounded-lg shadow-sm border">
                 <h3 class="text-md font-bold text-gray-700 mb-3 text-center">Comparativa de Escenarios de Sensibilidad (Barras)</h3>
                 <canvas id="scenarioChart" width="400" height="180"></canvas>
+                
+                <!-- EXPLICACIÓN DETALLADA DE LA GRÁFICA -->
+                <div class="mt-4 p-4 bg-gray-50 rounded-md border text-xs text-gray-600 space-y-2">
+                    <p class="font-bold text-gray-700 text-sm">📊 Guía de Interpretación de la Gráfica:</p>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li><strong>Barras Azules (Utilidad Total en Q):</strong> Reflejan la ganancia neta estimada para cada escenario (eje izquierdo). Una barra más alta indica mayor rentabilidad operativa.</li>
+                        <li><strong>Barras Rosas (Costo Unitario en Q):</strong> Muestran el costo acumulado por cada unidad fabricada (eje derecho). Permiten observar cómo impactan las variaciones de insumos o mermas en los costos de producción.</li>
+                        <li><strong>Escenario Base:</strong> Representa los valores originales ingresados en el formulario.</li>
+                        <li><strong>Escenarios de Sensibilidad (MP +12%, Desperdicio 9%, Extremo):</strong> Simulan condiciones adversas para evaluar la vulnerabilidad financiera del modelo de costos ante fluctuaciones del mercado.</li>
+                    </ul>
+                </div>
             </div>
 
             <!-- TABLAS Y SECCIONES DE ANÁLISIS -->
