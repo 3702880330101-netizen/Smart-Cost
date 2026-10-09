@@ -65,10 +65,15 @@
                 <input type="number" step="0.01" id="precio_venta" name="precio_venta" placeholder="" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
             </div>
 
+            <!-- Contenedor de Alerta de Validación -->
+            <div id="alertContainer" class="md:col-span-2 hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <span id="alertMessage" class="block sm:inline font-medium"></span>
+            </div>
+
             <!-- Botón Calcular -->
-            <div class="md:col-span-2 flex justify-start items-center mt-4">
+            <div class="md:col-span-2 flex justify-start items-center mt-2">
                 <button type="button" id="calcBtn" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-md shadow transition duration-200 cursor-pointer">
-                    Calcular y Sincronizar
+                    Calcular
                 </button>
             </div>
         </form>
@@ -181,17 +186,65 @@
         }
 
         document.getElementById('calcBtn').addEventListener('click', async () => {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertMessage = document.getElementById('alertMessage');
+            const resultsDiv = document.getElementById('results');
+
+            // Mapeo de campos con sus nombres amigables
+            const campos = [
+                { id: 'material', nombre: 'Material (Descripción)' },
+                { id: 'consumo_estandar', nombre: 'Consumo estándar' },
+                { id: 'precio_material', nombre: 'Precio del material' },
+                { id: 'desperdicio', nombre: 'Desperdicio (%)' },
+                { id: 'horas_mod', nombre: 'Horas MOD' },
+                { id: 'tarifa_mod', nombre: 'Tarifa MOD' },
+                { id: 'cif_variable', nombre: 'CIF variable' },
+                { id: 'costos_fijos', nombre: 'Costos fijos' },
+                { id: 'volumen', nombre: 'Volumen / Unidades producidas' },
+                { id: 'precio_venta', nombre: 'Precio de venta unitario' }
+            ];
+
+            let camposFaltantes = [];
+            let vaciosTotales = 0;
+
+            campos.forEach(campo => {
+                const valor = document.getElementById(campo.id).value.trim();
+                if (valor === "") {
+                    vaciosTotales++;
+                    camposFaltantes.push(campo.nombre);
+                }
+            });
+
+            // Validación: Si todos están vacíos
+            if (vaciosTotales === campos.length) {
+                alertMessage.textContent = "Las celdas están vacías.";
+                alertContainer.classList.remove('hidden');
+                resultsDiv.classList.add('hidden');
+                return;
+            }
+
+            // Validación: Si faltan algunos campos específicos
+            if (camposFaltantes.length > 0) {
+                alertMessage.textContent = `Falta rellenar el siguiente campo: ${camposFaltantes.join(', ')}`;
+                alertContainer.classList.remove('hidden');
+                resultsDiv.classList.add('hidden');
+                return;
+            }
+
+            // Si todo está completo, ocultamos alertas
+            alertContainer.classList.add('hidden');
+
             const baseData = {
-                material: document.getElementById('material').value || "Sin especificar",
-                consumo_estandar: parseFloat(document.getElementById('consumo_estandar').value) || 0,
-                precio_material: parseFloat(document.getElementById('precio_material').value) || 0,
-                desperdicio: parseFloat(document.getElementById('desperdicio').value) || 0,
-                horas_mod: parseFloat(document.getElementById('horas_mod').value) || 0,
-                tarifa_mod: parseFloat(document.getElementById('tarifa_mod').value) || 0,
-                cif_variable: parseFloat(document.getElementById('cif_variable').value) || 0,
-                costos_fijos: parseFloat(document.getElementById('costos_fijos').value) || 0,
-                volumen: parseFloat(document.getElementById('volumen').value) || 0,
-                precio_venta: parseFloat(document.getElementById('precio_venta').value) || 0,
+                material: document.getElementById('material').value,
+                consumo_estandar: parseFloat(document.getElementById('consumo_estandar').value),
+                precio_material: parseFloat(document.getElementById('precio_material').value),
+                desperdicio: parseFloat(document.getElementById('desperdicio').value),
+                horas_mod: parseFloat(document.getElementById('horas_mod').value),
+                tarifa_mod: parseFloat(document.getElementById('tarifa_mod').value),
+                cif_variable: parseFloat(document.getElementById('cif_variable').value),
+                costos_fijos: parseFloat(document.getElementById('costos_fijos').value),
+                volumen: parseFloat(document.getElementById('volumen').value),
+                precio_venta: parseFloat(document.getElementById('precio_venta').value),
                 timestamp: new Date().toISOString()
             };
 
@@ -202,7 +255,7 @@
             document.getElementById('res_costo_unit').textContent = `Q${resBase.costoUnitario.toFixed(2)}`;
             document.getElementById('res_utilidad').textContent = `Q${resBase.utilidad.toFixed(2)}`;
             document.getElementById('res_pe').textContent = `${resBase.puntoEquilibrio} un.`;
-            document.getElementById('results').classList.remove('hidden');
+            resultsDiv.classList.remove('hidden');
 
             // --- PRIORIZACIÓN DE VARIABLES (+10% de cambio) ---
             const variablesAProbar = ['precio_venta', 'precio_material', 'volumen', 'desperdicio', 'horas_mod', 'costos_fijos'];
@@ -276,7 +329,7 @@
             }
 
             myChart = new Chart(ctx, {
-                type: 'bar', // Tipo barra para ambos conjuntos de datos
+                type: 'bar',
                 data: {
                     labels: etiquetas,
                     datasets: [
