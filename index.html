@@ -3,36 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modelo de Costos, Sensibilidad y Conclusiones Gerenciales</title>
+    <title>Modelo de Costos Industriales y Análisis Gerencial</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- LIBRERÍA DE GRÁFICAS (Chart.js) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-gray-50 min-h-screen py-10 px-4">
 
-    <!-- MODAL DE ACCESO PARA EL TOKEN DE GITHUB -->
-    <div id="tokenModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 text-center">
-            <div class="mb-4">
-                <span class="text-3xl">🔐</span>
-                <h2 class="text-xl font-bold text-gray-800 mt-2">Acceso Seguro a GitHub</h2>
-                <p class="text-xs text-gray-500 mt-1">Ingresa tu Personal Access Token (PAT) para habilitar la sincronización automática con el motor analítico.</p>
-            </div>
-            <input type="password" id="tokenInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" class="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm mb-4">
-            <button type="button" id="saveTokenBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md shadow transition duration-200">
-                Entrar al Sistema
-            </button>
-            <p id="tokenError" class="text-xs text-red-500 mt-2 hidden">Por favor ingresa un token válido.</p>
-        </div>
-    </div>
-
     <!-- CONTENIDO PRINCIPAL DE LA PÁGINA -->
     <div class="max-w-5xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-8">
-        <div class="flex justify-between items-center mb-4">
-            <h1 class="text-3xl font-bold text-gray-800">Modelo de Costos Industriales y IA Gerencial</h1>
-            <button type="button" id="changeTokenBtn" class="text-xs text-indigo-600 hover:underline">Cambiar Token</button>
-        </div>
-        <p class="text-sm text-gray-500 mb-6">Modifica los parámetros para actualizar el análisis financiero, la priorización de variables y la sincronización con GitHub / Colab.</p>
+        <h1 class="text-3xl font-bold text-gray-800 mb-2 text-center">Modelo de Costos Industriales y IA Gerencial</h1>
+        <p class="text-sm text-gray-500 mb-6 text-center">Modifica los parámetros para actualizar el análisis financiero, la priorización de variables y la simulación de escenarios.</p>
         
         <form id="costForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Material -->
@@ -186,45 +167,11 @@
                     <!-- Dinámico -->
                 </div>
             </div>
-
-            <div id="colabLinkContainer" class="mt-6 text-center hidden">
-                <a id="colabLink" href="#" target="_blank" class="inline-block bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded shadow transition">
-                    Abrir Google Colab con estos datos sincronizados
-                </a>
-            </div>
         </div>
     </div>
 
     <script>
-        const FILENAME = "costos_data.json";
         let myChart = null;
-
-        // --- GESTIÓN DEL MODAL DE TOKEN SEGURO ---
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedToken = sessionStorage.getItem('github_token');
-            if (savedToken) {
-                document.getElementById('tokenModal').classList.add('hidden');
-            }
-        });
-
-        document.getElementById('saveTokenBtn').addEventListener('click', () => {
-            const token = document.getElementById('tokenInput').value.trim();
-            const errorElement = document.getElementById('tokenError');
-            if (!token.startsWith('ghp_') && !token.startsWith('github_pat_')) {
-                errorElement.textContent = "El token debe ser válido (ej. ghp_...)";
-                errorElement.classList.remove('hidden');
-                return;
-            }
-            sessionStorage.setItem('github_token', token);
-            document.getElementById('tokenModal').classList.add('hidden');
-        });
-
-        document.getElementById('changeTokenBtn').addEventListener('click', () => {
-            sessionStorage.removeItem('github_token');
-            document.getElementById('tokenInput').value = '';
-            document.getElementById('tokenModal').classList.remove('hidden');
-        });
-        // ------------------------------------------
 
         function calcularModelo(p) {
             const materialAjustado = p.consumo_estandar * (1 + (p.desperdicio / 100));
@@ -240,7 +187,7 @@
             return { costoUnitario, utilidad, puntoEquilibrio };
         }
 
-        document.getElementById('calcBtn').addEventListener('click', async () => {
+        document.getElementById('calcBtn').addEventListener('click', () => {
             const alertContainer = document.getElementById('alertContainer');
             const alertMessage = document.getElementById('alertMessage');
             const resultsDiv = document.getElementById('results');
@@ -295,8 +242,7 @@
                 cif_variable: parseFloat(document.getElementById('cif_variable').value),
                 costos_fijos: parseFloat(document.getElementById('costos_fijos').value),
                 volumen: parseFloat(document.getElementById('volumen').value),
-                precio_venta: parseFloat(document.getElementById('precio_venta').value),
-                timestamp: new Date().toISOString()
+                precio_venta: parseFloat(document.getElementById('precio_venta').value)
             };
 
             const resBase = calcularModelo(baseData);
@@ -417,48 +363,6 @@
                     }
                 }
             });
-
-            // --- SINCRONIZACIÓN CON GITHUB USANDO EL TOKEN DEL MODAL ---
-            const activeToken = sessionStorage.getItem('github_token');
-            if (!activeToken) return;
-
-            try {
-                const gistPayload = {
-                    description: "Datos de Costos Industriales - Verificables y Simulaciones",
-                    public: false,
-                    files: {
-                        [FILENAME]: {
-                            content: JSON.stringify(baseData, null, 2)
-                        }
-                    }
-                };
-
-                const response = await fetch('https://api.github.com/gists', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `token ${activeToken}`,
-                        'Accept': 'application/vnd.github.v3+json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(gistPayload)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Error en GitHub API: ${response.statusText}`);
-                }
-
-                const gistResult = await response.json();
-                const rawUrl = gistResult.files[FILENAME].raw_url;
-
-                const colabUrl = `https://colab.research.google.com/github/TU_USUARIO/TU_REPOSITORIO/blob/main/TU_CUADERNO.ipynb?raw_url=${encodeURIComponent(rawUrl)}`;
-                
-                const colabLink = document.getElementById('colabLink');
-                colabLink.href = colabUrl;
-                document.getElementById('colabLinkContainer').classList.remove('hidden');
-
-            } catch (error) {
-                console.error("Error al conectar con GitHub:", error);
-            }
         });
     </script>
 </body>
