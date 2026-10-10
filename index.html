@@ -8,165 +8,164 @@
     <!-- LIBRERÍA DE GRÁFICAS (Chart.js) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="bg-gray-50 min-h-screen py-10 px-4">
+<body class="bg-gray-50 min-h-screen py-6 px-4">
 
-    <!-- CONTENIDO PRINCIPAL DE LA PÁGINA -->
-    <div class="max-w-5xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-8">
-        <h1 class="text-3xl font-bold text-gray-800 mb-2 text-center">Modelo de Costos Industriales y IA Gerencial</h1>
-        <p class="text-sm text-gray-500 mb-6 text-center">Modifica los parámetros para actualizar el análisis financiero, la priorización de variables y la simulación de escenarios.</p>
+    <!-- CONTENEDOR PRINCIPAL -->
+    <div class="max-w-7xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6 md:p-8">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-1 text-center">Modelo de Costos Industriales y IA Gerencial</h1>
+        <p class="text-xs md:text-sm text-gray-500 mb-6 text-center">Modifica los parámetros a la izquierda para visualizar el impacto en tiempo real en la gráfica y resultados de la derecha.</p>
         
-        <form id="costForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Material -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Material (Descripción)</label>
-                <input type="text" id="material" name="material" placeholder="Ej. Acero Inoxidable" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2 focus:ring-indigo-500 focus:border-indigo-500">
-            </div>
-            <!-- Consumo estándar -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Consumo estándar</label>
-                <input type="number" step="0.01" id="consumo_estandar" name="consumo_estandar" placeholder="" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
-            </div>
-            <!-- Precio material -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Precio del material (Q)</label>
-                <input type="number" step="0.01" id="precio_material" name="precio_material" placeholder="" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
-            </div>
-            <!-- Desperdicio -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Desperdicio (%)</label>
-                <input type="number" step="0.1" id="desperdicio" name="desperdicio" placeholder="" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
-            </div>
-            <!-- Horas MOD -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Horas MOD</label>
-                <input type="number" step="0.1" id="horas_mod" name="horas_mod" placeholder="" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
-            </div>
-            <!-- Tarifa MOD -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Tarifa MOD (Q/hora)</label>
-                <input type="number" step="0.01" id="tarifa_mod" name="tarifa_mod" placeholder="" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
-            </div>
-            <!-- CIF variable -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700">CIF variable (Q)</label>
-                <input type="number" step="0.01" id="cif_variable" name="cif_variable" placeholder="" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
-            </div>
-            <!-- Costos fijos -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Costos fijos (Q totales)</label>
-                <input type="number" step="0.01" id="costos_fijos" name="costos_fijos" placeholder="" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
-            </div>
-            <!-- Volumen -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Volumen / Unidades producidas</label>
-                <input type="number" id="volumen" name="volumen" placeholder="" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
-            </div>
-            <!-- Precio venta -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Precio de venta unitario (Q)</label>
-                <input type="number" step="0.01" id="precio_venta" name="precio_venta" placeholder="" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2">
-            </div>
-
-            <!-- Contenedor de Alerta de Validación -->
-            <div id="alertContainer" class="md:col-span-2 hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                <span id="alertMessage" class="block sm:inline font-medium"></span>
-            </div>
-
-            <!-- Botón Calcular -->
-            <div class="md:col-span-2 flex justify-start items-center mt-2">
-                <button type="button" id="calcBtn" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-md shadow transition duration-200 cursor-pointer">
-                    Calcular
-                </button>
-            </div>
-        </form>
-
-        <!-- Resultados -->
-        <div id="results" class="mt-8 border-t pt-6 bg-gray-50 p-6 rounded-lg hidden">
-            <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
-                <h2 class="text-xl font-bold text-gray-800">Resultados Verificables</h2>
-                <button type="button" onclick="window.print()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md shadow transition duration-200 flex items-center gap-2">
-                    📄 Descargar Modelo en PDF
-                </button>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-                <div class="bg-white p-4 rounded shadow-sm border">
-                    <p class="text-sm text-gray-500">Costo Unitario</p>
-                    <p id="res_costo_unit" class="text-lg font-bold text-indigo-600">Q0.00</p>
-                </div>
-                <div class="bg-white p-4 rounded shadow-sm border">
-                    <p class="text-sm text-gray-500">Utilidad Total</p>
-                    <p id="res_utilidad" class="text-lg font-bold text-green-600">Q0.00</p>
-                </div>
-                <div class="bg-white p-4 rounded shadow-sm border">
-                    <p class="text-sm text-gray-500">Punto de Equilibrio (u.)</p>
-                    <p id="res_pe" class="text-lg font-bold text-blue-600">0 un.</p>
-                </div>
-            </div>
-
-            <!-- CONTENEDOR Y CANVAS PARA LA GRÁFICA DE BARRAS -->
-            <div class="mt-6 bg-white p-4 rounded-lg shadow-sm border">
-                <h3 class="text-md font-bold text-gray-700 mb-3 text-center">Comparativa de Escenarios de Sensibilidad (Barras)</h3>
-                <canvas id="scenarioChart" width="400" height="180"></canvas>
+        <!-- LAYOUT DE 2 COLUMNAS EN PARALELO -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            <!-- COLUMNA IZQUIERDA: FORMULARIO DE PARÁMETROS -->
+            <div class="lg:col-span-5 bg-gray-50 p-5 rounded-xl border">
+                <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center justify-between">
+                    <span>Parámetros de Entrada</span>
+                </h2>
                 
-                <!-- EXPLICACIÓN DETALLADA DE LA GRÁFICA -->
-                <div class="mt-4 p-4 bg-gray-50 rounded-md border text-xs text-gray-600 space-y-2">
-                    <p class="font-bold text-gray-700 text-sm">📊 Guía de Interpretación de la Gráfica:</p>
-                    <ul class="list-disc pl-5 space-y-1">
-                        <li><strong>Barras Azules (Utilidad Total en Q):</strong> Reflejan la ganancia neta estimada para cada escenario (eje izquierdo). Una barra más alta indica mayor rentabilidad operativa.</li>
-                        <li><strong>Barras Rosas (Costo Unitario en Q):</strong> Muestran el costo acumulado por cada unidad fabricada (eje derecho). Permiten observar cómo impactan las variaciones de insumos o mermas en los costos de producción.</li>
-                        <li><strong>Escenario Base:</strong> Representa los valores originales ingresados en el formulario.</li>
-                        <li><strong>Escenarios de Sensibilidad (MP +12%, Desperdicio 9%, Extremo):</strong> Simulan condiciones adversas para evaluar la vulnerabilidad financiera del modelo de costos ante fluctuaciones del mercado.</li>
-                    </ul>
-                </div>
+                <form id="costForm" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <!-- Material -->
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-medium text-gray-700">Material (Descripción)</label>
+                        <input type="text" id="material" name="material" value="Aluminio" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                    </div>
+                    <!-- Consumo estándar -->
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700">Consumo estándar</label>
+                        <input type="number" step="0.01" id="consumo_estandar" name="consumo_estandar" value="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                    </div>
+                    <!-- Precio material -->
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700">Precio material (Q)</label>
+                        <input type="number" step="0.01" id="precio_material" name="precio_material" value="50" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                    </div>
+                    <!-- Desperdicio -->
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700">Desperdicio (%)</label>
+                        <input type="number" step="0.1" id="desperdicio" name="desperdicio" value="5" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                    </div>
+                    <!-- Horas MOD -->
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700">Horas MOD</label>
+                        <input type="number" step="0.1" id="horas_mod" name="horas_mod" value="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                    </div>
+                    <!-- Tarifa MOD -->
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700">Tarifa MOD (Q/h)</label>
+                        <input type="number" step="0.01" id="tarifa_mod" name="tarifa_mod" value="250" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                    </div>
+                    <!-- CIF variable -->
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700">CIF variable (Q)</label>
+                        <input type="number" step="0.01" id="cif_variable" name="cif_variable" value="250" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                    </div>
+                    <!-- Costos fijos -->
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700">Costos fijos (Q)</label>
+                        <input type="number" step="0.01" id="costos_fijos" name="costos_fijos" value="400" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                    </div>
+                    <!-- Volumen -->
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700">Volumen / Unidades</label>
+                        <input type="number" id="volumen" name="volumen" value="200" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                    </div>
+                    <!-- Precio venta -->
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-medium text-gray-700">Precio de venta unitario (Q)</label>
+                        <input type="number" step="0.01" id="precio_venta" name="precio_venta" value="250" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                    </div>
+
+                    <!-- Alerta -->
+                    <div id="alertContainer" class="sm:col-span-2 hidden bg-red-100 border border-red-400 text-red-700 px-3 py-2 rounded text-xs" role="alert">
+                        <span id="alertMessage" class="block font-medium"></span>
+                    </div>
+
+                    <!-- Botón Actualizar / Calcular -->
+                    <div class="sm:col-span-2 mt-2">
+                        <button type="button" id="calcBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-4 rounded-md shadow transition duration-200 text-sm cursor-pointer">
+                            Actualizar Análisis
+                        </button>
+                    </div>
+                </form>
             </div>
 
-            <!-- TABLAS Y SECCIONES DE ANÁLISIS -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                <!-- Tabla de Priorización de Variables -->
-                <div class="bg-white p-4 rounded-lg shadow-sm border">
-                    <h3 class="text-md font-bold text-gray-700 mb-3">Priorización de Variables (Impacto por +10%)</h3>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full text-sm text-left text-gray-500">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-100">
-                                <tr>
-                                    <th class="py-2 px-3">Variable</th>
-                                    <th class="py-2 px-3">Impacto en Utilidad (Q)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="prioritizationTableBody">
-                                <!-- Dinámico -->
-                            </tbody>
-                        </table>
+            <!-- COLUMNA DERECHA: RESULTADOS, GRÁFICA Y REPORTES -->
+            <div class="lg:col-span-7 bg-gray-50 p-5 rounded-xl border space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-2">
+                    <h2 class="text-lg font-bold text-gray-800">Análisis y Resultados</h2>
+                    <button type="button" onclick="window.print()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1.5 px-3 rounded-md shadow transition duration-200 text-xs flex items-center gap-1.5">
+                        📄 Descargar PDF
+                    </button>
+                </div>
+
+                <!-- Tarjetas de Métricas -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center">
+                    <div class="bg-white p-3 rounded-lg shadow-sm border">
+                        <p class="text-[11px] text-gray-500 uppercase font-semibold">Costo Unitario</p>
+                        <p id="res_costo_unit" class="text-base font-bold text-indigo-600 mt-0.5">Q0.00</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg shadow-sm border">
+                        <p class="text-[11px] text-gray-500 uppercase font-semibold">Utilidad Total</p>
+                        <p id="res_utilidad" class="text-base font-bold text-green-600 mt-0.5">Q0.00</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg shadow-sm border">
+                        <p class="text-[11px] text-gray-500 uppercase font-semibold">Punto de Equilibrio</p>
+                        <p id="res_pe" class="text-base font-bold text-blue-600 mt-0.5">0 un.</p>
                     </div>
                 </div>
 
-                <!-- Comparativa de Escenarios de Mejora -->
-                <div class="bg-white p-4 rounded-lg shadow-sm border">
-                    <h3 class="text-md font-bold text-gray-700 mb-3">Escenarios de Mejora Sugeridos</h3>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full text-sm text-left text-gray-500">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-100">
-                                <tr>
-                                    <th class="py-2 px-3">Escenario</th>
-                                    <th class="py-2 px-3">Utilidad Total (Q)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="scenariosTableBody">
-                                <!-- Dinámico -->
-                            </tbody>
-                        </table>
+                <!-- Gráfica -->
+                <div class="bg-white p-3 rounded-lg shadow-sm border">
+                    <h3 class="text-xs font-bold text-gray-700 mb-2 text-center">Comparativa de Escenarios de Sensibilidad</h3>
+                    <div class="relative w-full h-48">
+                        <canvas id="scenarioChart"></canvas>
                     </div>
                 </div>
+
+                <!-- Tablas de Análisis en 2 Columnas internas -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <!-- Priorización -->
+                    <div class="bg-white p-3 rounded-lg shadow-sm border">
+                        <h3 class="text-[11px] font-bold text-gray-700 uppercase mb-2">Prioridad (Impacto +10%)</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full text-xs text-left text-gray-500">
+                                <thead class="text-[10px] text-gray-700 uppercase bg-gray-100">
+                                    <tr>
+                                        <th class="py-1 px-2">Variable</th>
+                                        <th class="py-1 px-2">Impacto (Q)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="prioritizationTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Escenarios de Mejora -->
+                    <div class="bg-white p-3 rounded-lg shadow-sm border">
+                        <h3 class="text-[11px] font-bold text-gray-700 uppercase mb-2">Escenarios de Mejora</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full text-xs text-left text-gray-500">
+                                <thead class="text-[10px] text-gray-700 uppercase bg-gray-100">
+                                    <tr>
+                                        <th class="py-1 px-2">Escenario</th>
+                                        <th class="py-1 px-2">Utilidad (Q)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="scenariosTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reporte Gerencial -->
+                <div class="bg-white p-3 rounded-lg shadow-sm border">
+                    <h3 class="text-xs font-bold text-gray-800 mb-1">Reporte Gerencial</h3>
+                    <div id="gerencialReport" class="text-xs text-gray-600 space-y-1"></div>
+                </div>
+
             </div>
 
-            <!-- Conclusiones Gerenciales Automatizadas -->
-            <div class="mt-6 bg-white p-5 rounded-lg shadow-sm border">
-                <h3 class="text-md font-bold text-gray-800 mb-2">Conclusiones y Reporte Gerencial</h3>
-                <div id="gerencialReport" class="text-sm text-gray-600 space-y-2">
-                    <!-- Dinámico -->
-                </div>
-            </div>
         </div>
     </div>
 
@@ -187,10 +186,9 @@
             return { costoUnitario, utilidad, puntoEquilibrio };
         }
 
-        document.getElementById('calcBtn').addEventListener('click', () => {
+        function ejecutarCalculo() {
             const alertContainer = document.getElementById('alertContainer');
             const alertMessage = document.getElementById('alertMessage');
-            const resultsDiv = document.getElementById('results');
 
             const campos = [
                 { id: 'material', nombre: 'Material (Descripción)' },
@@ -206,27 +204,16 @@
             ];
 
             let camposFaltantes = [];
-            let vaciosTotales = 0;
-
             campos.forEach(campo => {
                 const valor = document.getElementById(campo.id).value.trim();
                 if (valor === "") {
-                    vaciosTotales++;
                     camposFaltantes.push(campo.nombre);
                 }
             });
 
-            if (vaciosTotales === campos.length) {
-                alertMessage.textContent = "Las celdas están vacías.";
-                alertContainer.classList.remove('hidden');
-                resultsDiv.classList.add('hidden');
-                return;
-            }
-
             if (camposFaltantes.length > 0) {
-                alertMessage.textContent = `Falta rellenar el siguiente campo: ${camposFaltantes.join(', ')}`;
+                alertMessage.textContent = `Falta rellenar: ${camposFaltantes.join(', ')}`;
                 alertContainer.classList.remove('hidden');
-                resultsDiv.classList.add('hidden');
                 return;
             }
 
@@ -250,7 +237,6 @@
             document.getElementById('res_costo_unit').textContent = `Q${resBase.costoUnitario.toFixed(2)}`;
             document.getElementById('res_utilidad').textContent = `Q${resBase.utilidad.toFixed(2)}`;
             document.getElementById('res_pe').textContent = `${resBase.puntoEquilibrio} un.`;
-            resultsDiv.classList.remove('hidden');
 
             // --- PRIORIZACIÓN DE VARIABLES ---
             const variablesAProbar = ['precio_venta', 'precio_material', 'volumen', 'desperdicio', 'horas_mod', 'costos_fijos'];
@@ -270,16 +256,16 @@
 
             let priorTableHTML = "";
             impactos.forEach(item => {
-                priorTableHTML += `<tr class="border-b"><td class="py-2 px-3 font-medium">${item.variable}</td><td class="py-2 px-3">Q${item.impacto.toFixed(2)}</td></tr>`;
+                priorTableHTML += `<tr class="border-b"><td class="py-1 px-2 font-medium">${item.variable}</td><td class="py-1 px-2">Q${item.impacto.toFixed(2)}</td></tr>`;
             });
             document.getElementById('prioritizationTableBody').innerHTML = priorTableHTML;
 
             // --- ESCENARIOS DE MEJORA ---
             let escenarios = [
                 { nombre: "Base Actual", params: baseData },
-                { nombre: "Reducción de Desperdicio (2%)", params: {...baseData, desperdicio: 2.0} },
-                { nombre: "Optimización MP (-5% Precio)", params: {...baseData, precio_material: baseData.precio_material * 0.95} },
-                { nombre: "Aumento de Volumen (+5%)", params: {...baseData, volumen: Math.round(baseData.volumen * 1.05)} }
+                { nombre: "Reducción Desperdicio (2%)", params: {...baseData, desperdicio: 2.0} },
+                { nombre: "Optimización MP (-5%)", params: {...baseData, precio_material: baseData.precio_material * 0.95} },
+                { nombre: "Aumento Volumen (+5%)", params: {...baseData, volumen: Math.round(baseData.volumen * 1.05)} }
             ];
 
             let scenariosTableHTML = "";
@@ -292,16 +278,16 @@
                     mejorUtilidad = resEsc.utilidad;
                     mejorNombreEscenario = esc.nombre;
                 }
-                scenariosTableHTML += `<tr class="border-b"><td class="py-2 px-3 font-medium">${esc.nombre}</td><td class="py-2 px-3 text-green-600 font-bold">Q${resEsc.utilidad.toFixed(2)}</td></tr>`;
+                scenariosTableHTML += `<tr class="border-b"><td class="py-1 px-2 font-medium">${esc.nombre}</td><td class="py-1 px-2 text-green-600 font-bold">Q${resEsc.utilidad.toFixed(2)}</td></tr>`;
             });
             document.getElementById('scenariosTableBody').innerHTML = scenariosTableHTML;
 
             // --- CONCLUSIONES GERENCIALES ---
             let variableClave = impactos[0].variable;
             let reportHTML = `
-                <p><strong>1. Sensibilidad y Prioridad:</strong> La variable con mayor impacto cuantitativo en la utilidad es <em>'${variableClave}'</em>. Se recomienda enfocar los esfuerzos de negociación y control prioritariamente en este factor.</p>
-                <p><strong>2. Umbral Operativo:</strong> Se requiere un volumen mínimo de ventas de <strong>${resBase.puntoEquilibrio} unidades</strong> para alcanzar el punto de equilibrio y cubrir los costos fijos totales de Q${baseData.costos_fijos.toFixed(2)}.</p>
-                <p><strong>3. Rendimiento Óptimo:</strong> El escenario proyectado más favorable es <em>'${mejorNombreEscenario}'</em>, maximizando la rentabilidad del periodo.</p>
+                <p><strong>1. Sensibilidad:</strong> Mayor impacto en <em>'${variableClave}'</em>.</p>
+                <p><strong>2. Equilibrio:</strong> Se requieren <strong>${resBase.puntoEquilibrio} unidades</strong>.</p>
+                <p><strong>3. Óptimo:</strong> El mejor escenario es <em>'${mejorNombreEscenario}'</em>.</p>
             `;
             document.getElementById('gerencialReport').innerHTML = reportHTML;
 
@@ -314,7 +300,7 @@
             let pExt = {...baseData, precio_venta: baseData.precio_venta * 0.65};
             const r4 = calcularModelo(pExt);
 
-            const etiquetas = ["Base", "MP +12%", "Desperdicio 9%", "Extremo"];
+            const etiquetas = ["Base", "MP +12%", "Desp. 9%", "Extremo"];
             const utilidades = [r1.utilidad, r2.utilidad, r3.utilidad, r4.utilidad];
             const costosUnitarios = [r1.costoUnitario, r2.costoUnitario, r3.costoUnitario, r4.costoUnitario];
 
@@ -348,6 +334,7 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     scales: {
                         y: {
                             type: 'linear',
@@ -363,7 +350,13 @@
                     }
                 }
             });
-        });
+        }
+
+        // Ejecutar al hacer clic en el botón
+        document.getElementById('calcBtn').addEventListener('click', ejecutarCalculo);
+
+        // Ejecutar automáticamente al cargar la página para ver el dashboard inmediato
+        window.addEventListener('DOMContentLoaded', ejecutarCalculo);
     </script>
 </body>
 </html>
