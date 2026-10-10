@@ -115,11 +115,22 @@
                     </div>
                 </div>
 
-                <!-- Gráfica -->
+                <!-- Gráfica y Guía de Interpretación -->
                 <div class="bg-white p-3 rounded-lg shadow-sm border">
                     <h3 class="text-xs font-bold text-gray-700 mb-2 text-center">Comparativa de Escenarios de Sensibilidad</h3>
                     <div class="relative w-full h-48">
                         <canvas id="scenarioChart"></canvas>
+                    </div>
+                    
+                    <!-- GUÍA DE INTERPRETACIÓN DE LA GRÁFICA -->
+                    <div class="mt-3 p-3 bg-gray-50 rounded-md border text-[11px] text-gray-600 space-y-1.5">
+                        <p class="font-bold text-gray-700 text-xs">📊 Guía de Interpretación de la Gráfica:</p>
+                        <ul class="list-disc pl-4 space-y-1">
+                            <li><strong>Barras Azules (Utilidad Total en Q):</strong> Reflejan la ganancia neta estimada para cada escenario. Una barra más alta indica mayor rentabilidad operativa.</li>
+                            <li><strong>Barras Rosas (Costo Unitario en Q):</strong> Muestran el costo acumulado por cada unidad fabricada.</li>
+                            <li><strong>Escenario Base:</strong> Representa los valores originales ingresados en el formulario.</li>
+                            <li><strong>Escenarios de Sensibilidad:</strong> Simulan condiciones adversas para evaluar la vulnerabilidad financiera.</li>
+                        </ul>
                     </div>
                 </div>
 
@@ -285,9 +296,9 @@
             // --- CONCLUSIONES GERENCIALES ---
             let variableClave = impactos[0].variable;
             let reportHTML = `
-                <p><strong>1. Sensibilidad:</strong> Mayor impacto en <em>'${variableClave}'</em>.</p>
-                <p><strong>2. Equilibrio:</strong> Se requieren <strong>${resBase.puntoEquilibrio} unidades</strong>.</p>
-                <p><strong>3. Óptimo:</strong> El mejor escenario es <em>'${mejorNombreEscenario}'</em>.</p>
+                <p><strong>1. Sensibilidad y Prioridad:</strong> La variable con mayor impacto cuantitativo en la utilidad es <em>'${variableClave}'</em>. Se recomienda enfocar los esfuerzos en este factor.</p>
+                <p><strong>2. Umbral Operativo:</strong> Se requiere un volumen mínimo de ventas de <strong>${resBase.puntoEquilibrio} unidades</strong> para alcanzar el punto de equilibrio y cubrir los costos fijos totales.</p>
+                <p><strong>3. Rendimiento Óptimo:</strong> El escenario proyectado más favorable es <em>'${mejorNombreEscenario}'</em>.</p>
             `;
             document.getElementById('gerencialReport').innerHTML = reportHTML;
 
@@ -352,10 +363,7 @@
             });
         }
 
-        // Ejecutar al hacer clic en el botón
         document.getElementById('calcBtn').addEventListener('click', ejecutarCalculo);
-
-        // Ejecutar automáticamente al cargar la página para ver el dashboard inmediato
         window.addEventListener('DOMContentLoaded', ejecutarCalculo);
     </script>
 </body>
