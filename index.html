@@ -448,7 +448,7 @@
             document.getElementById('gerencialReport').innerHTML = reportHTML;
         }
 
-        // --- CONSULTA INTERACTIVA CON IA (MODELO ACTUALIZADO) ---
+        // --- CONSULTA INTERACTIVA CON IA (MODELO GEMINI 3.8 FLASH) ---
         document.getElementById('askAiBtn').addEventListener('click', async () => {
             const apiKey = sessionStorage.getItem('gemini_api_key');
             const pregunta = document.getElementById('aiPrompt').value.trim();
@@ -476,8 +476,8 @@
                 Responde en español de forma ejecutiva, concisa, profesional y estructurada con viñetas si es necesario.
             `;
 
-            // URL actualizada utilizando el modelo actual gemini-2.5-flash
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+            // URL actualizada utilizando el modelo más nuevo gemini-3.8-flash
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`;
 
             try {
                 const response = await fetch(url, {
