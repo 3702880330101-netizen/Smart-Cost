@@ -448,7 +448,7 @@
             document.getElementById('gerencialReport').innerHTML = reportHTML;
         }
 
-        // --- CONSULTA INTERACTIVA CON IA (LLAMADA ROBUSTA A GEMINI) ---
+        // --- CONSULTA INTERACTIVA CON IA (MODELO ACTUALIZADO) ---
         document.getElementById('askAiBtn').addEventListener('click', async () => {
             const apiKey = sessionStorage.getItem('gemini_api_key');
             const pregunta = document.getElementById('aiPrompt').value.trim();
@@ -476,8 +476,8 @@
                 Responde en español de forma ejecutiva, concisa, profesional y estructurada con viñetas si es necesario.
             `;
 
-            // Intentar con el endpoint v1beta para modelos Gemini
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+            // URL actualizada utilizando el modelo actual gemini-2.5-flash
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
             try {
                 const response = await fetch(url, {
@@ -497,7 +497,7 @@
                 } else if (data.error) {
                     responseText.textContent = `❌ Error de la API de Google: ${data.error.message || 'Clave no válida o sin permisos'}`;
                 } else {
-                    responseText.textContent = "⚠️ La API respondió pero no generó texto. Verifica que tu clave de API tenga permisos para el modelo Gemini.";
+                    responseText.textContent = "⚠️ La API respondió pero no generó texto. Verifica que tu clave de API tenga permisos activos.";
                 }
             } catch (err) {
                 responseText.textContent = "❌ Error de red o conexión: " + err.message;
