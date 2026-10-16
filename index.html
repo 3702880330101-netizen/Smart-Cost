@@ -10,19 +10,36 @@
 </head>
 <body class="bg-gray-50 min-h-screen py-6 px-4">
 
+    <!-- MODAL PARA LA CLAVE API DE GEMINI -->
+    <div id="apiModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 text-center">
+            <div class="mb-4">
+                <span class="text-3xl">🤖</span>
+                <h2 class="text-xl font-bold text-gray-800 mt-2">Configuración de IA (Gemini)</h2>
+                <p class="text-xs text-gray-500 mt-1">Ingresa tu Clave de API de Google AI para habilitar el asistente de consultas gerenciales en tiempo real.</p>
+            </div>
+            <input type="password" id="apiKeyInput" placeholder="AIzaSy..." class="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm mb-4">
+            <button type="button" id="saveApiKeyBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md shadow transition duration-200">
+                Iniciar Sistema
+            </button>
+            <p id="apiKeyError" class="text-xs text-red-500 mt-2 hidden">Por favor ingresa una clave válida.</p>
+        </div>
+    </div>
+
     <!-- CONTENEDOR PRINCIPAL -->
     <div class="max-w-7xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6 md:p-8">
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-1 text-center">Modelo de Costos Industriales y IA Gerencial</h1>
-        <p class="text-xs md:text-sm text-gray-500 mb-6 text-center">Ingresa los parámetros a la izquierda para visualizar el impacto en tiempo real en la gráfica y resultados de la derecha.</p>
+        <div class="flex justify-between items-center mb-1">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800 text-center flex-1">Modelo de Costos Industriales y IA Gerencial</h1>
+            <button type="button" id="changeKeyBtn" class="text-xs text-indigo-600 hover:underline">Cambiar API Key</button>
+        </div>
+        <p class="text-xs md:text-sm text-gray-500 mb-6 text-center">Ingresa los parámetros a la izquierda para visualizar el impacto en tiempo real y realiza consultas inteligentes a la derecha.</p>
         
         <!-- LAYOUT DE 2 COLUMNAS EN PARALELO -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             
             <!-- COLUMNA IZQUIERDA: FORMULARIO DE PARÁMETROS -->
             <div class="lg:col-span-5 bg-gray-50 p-5 rounded-xl border">
-                <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center justify-between">
-                    <span>Parámetros de Entrada</span>
-                </h2>
+                <h2 class="text-lg font-bold text-gray-800 mb-4">Parámetros de Entrada</h2>
                 
                 <form id="costForm" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     
@@ -30,12 +47,6 @@
                     <div class="sm:col-span-2">
                         <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
                             <span>Material (Descripción)</span>
-                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
-                                ℹ️
-                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Nombre o tipo de materia prima principal utilizada (Ej. Aluminio, Acero).
-                                </span>
-                            </span>
                         </label>
                         <input type="text" id="material" name="material" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
                     </div>
@@ -44,12 +55,6 @@
                     <div>
                         <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
                             <span>Consumo estándar</span>
-                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
-                                ℹ️
-                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Cantidad neta de material requerida para fabricar una unidad de producto.
-                                </span>
-                            </span>
                         </label>
                         <input type="number" step="0.01" id="consumo_estandar" name="consumo_estandar" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
                     </div>
@@ -58,12 +63,6 @@
                     <div>
                         <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
                             <span>Precio material (Q)</span>
-                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
-                                ℹ️
-                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Costo unitario de adquisición de la materia prima por cada unidad de medida.
-                                </span>
-                            </span>
                         </label>
                         <input type="number" step="0.01" id="precio_material" name="precio_material" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
                     </div>
@@ -72,12 +71,6 @@
                     <div>
                         <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
                             <span>Desperdicio (%)</span>
-                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
-                                ℹ️
-                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Porcentaje estimado de material que se desecha o se pierde durante el proceso de producción.
-                                </span>
-                            </span>
                         </label>
                         <input type="number" step="0.1" id="desperdicio" name="desperdicio" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
                     </div>
@@ -86,12 +79,6 @@
                     <div>
                         <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
                             <span>Horas MOD</span>
-                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
-                                ℹ️
-                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Horas de Mano de Obra Directa invertidas en la fabricación de una unidad.
-                                </span>
-                            </span>
                         </label>
                         <input type="number" step="0.1" id="horas_mod" name="horas_mod" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
                     </div>
@@ -100,12 +87,6 @@
                     <div>
                         <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
                             <span>Tarifa MOD (Q/h)</span>
-                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
-                                ℹ️
-                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Costo por hora pagado al personal de producción directo.
-                                </span>
-                            </span>
                         </label>
                         <input type="number" step="0.01" id="tarifa_mod" name="tarifa_mod" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
                     </div>
@@ -114,12 +95,6 @@
                     <div>
                         <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
                             <span>CIF variable (Q)</span>
-                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
-                                ℹ️
-                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Costos Indirectos de Fabricación que varían según el volumen de producción unitario.
-                                </span>
-                            </span>
                         </label>
                         <input type="number" step="0.01" id="cif_variable" name="cif_variable" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
                     </div>
@@ -128,12 +103,6 @@
                     <div>
                         <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
                             <span>Costos fijos (Q)</span>
-                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
-                                ℹ️
-                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Gastos operativos totales que no cambian sin importar cuántas unidades se produzcan.
-                                </span>
-                            </span>
                         </label>
                         <input type="number" step="0.01" id="costos_fijos" name="costos_fijos" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
                     </div>
@@ -142,12 +111,6 @@
                     <div>
                         <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
                             <span>Volumen / Unidades</span>
-                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
-                                ℹ️
-                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Cantidad total de unidades que se planea fabricar y vender en el período.
-                                </span>
-                            </span>
                         </label>
                         <input type="number" id="volumen" name="volumen" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
                     </div>
@@ -156,12 +119,6 @@
                     <div class="sm:col-span-2">
                         <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
                             <span>Precio de venta unitario (Q)</span>
-                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
-                                ℹ️
-                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Precio monetario al cual se comercializa cada unidad terminada en el mercado.
-                                </span>
-                            </span>
                         </label>
                         <input type="number" step="0.01" id="precio_venta" name="precio_venta" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
                     </div>
@@ -171,7 +128,7 @@
                         <span id="alertMessage" class="block font-medium"></span>
                     </div>
 
-                    <!-- Botón Actualizar / Calcular -->
+                    <!-- Botón Calcular -->
                     <div class="sm:col-span-2 mt-2">
                         <button type="button" id="calcBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-4 rounded-md shadow transition duration-200 text-sm cursor-pointer">
                             Actualizar Análisis
@@ -180,7 +137,7 @@
                 </form>
             </div>
 
-            <!-- COLUMNA DERECHA: RESULTADOS, GRÁFICA Y REPORTES -->
+            <!-- COLUMNA DERECHA: RESULTADOS, GRÁFICA Y ASISTENTE DE IA -->
             <div class="lg:col-span-7 bg-gray-50 p-5 rounded-xl border space-y-4">
                 <div class="flex flex-col sm:flex-row justify-between items-center gap-2">
                     <h2 class="text-lg font-bold text-gray-800">Análisis y Resultados</h2>
@@ -205,28 +162,16 @@
                     </div>
                 </div>
 
-                <!-- Gráfica y Guía de Interpretación -->
+                <!-- Gráfica -->
                 <div class="bg-white p-3 rounded-lg shadow-sm border">
                     <h3 class="text-xs font-bold text-gray-700 mb-2 text-center">Comparativa de Escenarios de Sensibilidad</h3>
-                    <div class="relative w-full h-48">
+                    <div class="relative w-full h-40">
                         <canvas id="scenarioChart"></canvas>
-                    </div>
-                    
-                    <!-- GUÍA DE INTERPRETACIÓN DE LA GRÁFICA -->
-                    <div class="mt-3 p-3 bg-gray-50 rounded-md border text-[11px] text-gray-600 space-y-1.5">
-                        <p class="font-bold text-gray-700 text-xs">📊 Guía de Interpretación de la Gráfica:</p>
-                        <ul class="list-disc pl-4 space-y-1">
-                            <li><strong>Barras Azules (Utilidad Total en Q):</strong> Reflejan la ganancia neta estimada para cada escenario. Una barra más alta indica mayor rentabilidad operativa.</li>
-                            <li><strong>Barras Rosas (Costo Unitario en Q):</strong> Muestran el costo acumulado por cada unidad fabricada.</li>
-                            <li><strong>Escenario Base:</strong> Representa los valores originales ingresados en el formulario.</li>
-                            <li><strong>Escenarios de Sensibilidad:</strong> Simulan condiciones adversas para evaluar la vulnerabilidad financiera.</li>
-                        </ul>
                     </div>
                 </div>
 
-                <!-- Tablas de Análisis en 2 Columnas internas -->
+                <!-- Tablas de Análisis -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <!-- Priorización -->
                     <div class="bg-white p-3 rounded-lg shadow-sm border">
                         <h3 class="text-[11px] font-bold text-gray-700 uppercase mb-2">Prioridad (Impacto +10%)</h3>
                         <div class="overflow-x-auto">
@@ -242,7 +187,6 @@
                         </div>
                     </div>
 
-                    <!-- Escenarios de Mejora -->
                     <div class="bg-white p-3 rounded-lg shadow-sm border">
                         <h3 class="text-[11px] font-bold text-gray-700 uppercase mb-2">Escenarios de Mejora</h3>
                         <div class="overflow-x-auto">
@@ -259,10 +203,27 @@
                     </div>
                 </div>
 
-                <!-- Reporte Gerencial -->
-                <div class="bg-white p-3 rounded-lg shadow-sm border">
-                    <h3 class="text-xs font-bold text-gray-800 mb-1">Reporte Gerencial</h3>
-                    <div id="gerencialReport" class="text-xs text-gray-600 space-y-1"></div>
+                <!-- REPORTE GERENCIAL Y CONSULTAS DE IA INTERACTIVAS -->
+                <div class="bg-white p-4 rounded-lg shadow-sm border space-y-3">
+                    <h3 class="text-xs font-bold text-gray-800">🤖 Consultas Gerenciales con IA (Gemini)</h3>
+                    <p class="text-[11px] text-gray-500">Hazle una pregunta o plantea un escenario a la IA basado en los datos actuales de tu modelo:</p>
+                    
+                    <div class="flex gap-2">
+                        <input type="text" id="aiPrompt" placeholder="Ej. ¿Qué pasa si el precio del material sube un 15%?" class="flex-1 text-xs border rounded-md p-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <button type="button" id="askAiBtn" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-md text-xs transition duration-200">
+                            Preguntar a la IA
+                        </button>
+                    </div>
+
+                    <div id="aiResponseContainer" class="hidden mt-2 p-3 bg-indigo-50 rounded-md border border-indigo-100 text-xs text-gray-700 space-y-1">
+                        <p class="font-bold text-indigo-900">Respuesta de la IA:</p>
+                        <div id="aiResponseText" class="whitespace-pre-line"></div>
+                    </div>
+
+                    <div class="border-t pt-2 mt-2">
+                        <h4 class="text-[11px] font-bold text-gray-700 mb-1">Reporte Automático Base:</h4>
+                        <div id="gerencialReport" class="text-xs text-gray-600 space-y-1"></div>
+                    </div>
                 </div>
 
             </div>
@@ -272,6 +233,34 @@
 
     <script>
         let myChart = null;
+        let datosUltimoCalculo = null;
+
+        // --- GESTIÓN DEL MODAL DE API KEY ---
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedKey = sessionStorage.getItem('gemini_api_key');
+            if (savedKey) {
+                document.getElementById('apiModal').classList.add('hidden');
+            }
+        });
+
+        document.getElementById('saveApiKeyBtn').addEventListener('click', () => {
+            const key = document.getElementById('apiKeyInput').value.trim();
+            const errorElement = document.getElementById('apiKeyError');
+            if (!key.startsWith('AIza')) {
+                errorElement.textContent = "La clave de API debe comenzar con 'AIza...'";
+                errorElement.classList.remove('hidden');
+                return;
+            }
+            sessionStorage.setItem('gemini_api_key', key);
+            document.getElementById('apiModal').classList.add('hidden');
+        });
+
+        document.getElementById('changeKeyBtn').addEventListener('click', () => {
+            sessionStorage.removeItem('gemini_api_key');
+            document.getElementById('apiKeyInput').value = '';
+            document.getElementById('apiModal').classList.remove('hidden');
+        });
+        // ------------------------------------
 
         function calcularModelo(p) {
             const materialAjustado = p.consumo_estandar * (1 + (p.desperdicio / 100));
@@ -284,7 +273,7 @@
             const puntoEquilibrio = margenContribucionUnitario > 0 ? Math.ceil(p.costos_fijos / margenContribucionUnitario) : 0;
             const utilidad = (margenContribucionUnitario * p.volumen) - p.costos_fijos;
 
-            return { costoUnitario, utilidad, puntoEquilibrio };
+            return { costoUnitario, utilidad, puntoEquilibrio, costoVariableUnitario };
         }
 
         function ejecutarCalculo() {
@@ -320,7 +309,7 @@
 
             alertContainer.classList.add('hidden');
 
-            const baseData = {
+            datosUltimoCalculo = {
                 material: document.getElementById('material').value,
                 consumo_estandar: parseFloat(document.getElementById('consumo_estandar').value),
                 precio_material: parseFloat(document.getElementById('precio_material').value),
@@ -333,24 +322,21 @@
                 precio_venta: parseFloat(document.getElementById('precio_venta').value)
             };
 
-            const resBase = calcularModelo(baseData);
+            const resBase = calcularModelo(datosUltimoCalculo);
 
             document.getElementById('res_costo_unit').textContent = `Q${resBase.costoUnitario.toFixed(2)}`;
             document.getElementById('res_utilidad').textContent = `Q${resBase.utilidad.toFixed(2)}`;
             document.getElementById('res_pe').textContent = `${resBase.puntoEquilibrio} un.`;
 
-            // --- PRIORIZACIÓN DE VARIABLES ---
+            // --- PRIORIZACIÓN ---
             const variablesAProbar = ['precio_venta', 'precio_material', 'volumen', 'desperdicio', 'horas_mod', 'costos_fijos'];
             let impactos = [];
             
             variablesAProbar.forEach(varName => {
-                let pMod = {...baseData};
+                let pMod = {...datosUltimoCalculo};
                 pMod[varName] = pMod[varName] * 1.10;
                 let resMod = calcularModelo(pMod);
-                impactos.push({
-                    variable: varName,
-                    impacto: resMod.utilidad - resBase.utilidad
-                });
+                impactos.push({ variable: varName, impacto: resMod.utilidad - resBase.utilidad });
             });
 
             impactos.sort((a, b) => Math.abs(b.impacto) - Math.abs(a.impacto));
@@ -361,12 +347,12 @@
             });
             document.getElementById('prioritizationTableBody').innerHTML = priorTableHTML;
 
-            // --- ESCENARIOS DE MEJORA ---
+            // --- ESCENARIOS ---
             let escenarios = [
-                { nombre: "Base Actual", params: baseData },
-                { nombre: "Reducción Desperdicio (2%)", params: {...baseData, desperdicio: 2.0} },
-                { nombre: "Optimización MP (-5%)", params: {...baseData, precio_material: baseData.precio_material * 0.95} },
-                { nombre: "Aumento Volumen (+5%)", params: {...baseData, volumen: Math.round(baseData.volumen * 1.05)} }
+                { nombre: "Base Actual", params: datosUltimoCalculo },
+                { nombre: "Reducción Desperdicio (2%)", params: {...datosUltimoCalculo, desperdicio: 2.0} },
+                { nombre: "Optimización MP (-5%)", params: {...datosUltimoCalculo, precio_material: datosUltimoCalculo.precio_material * 0.95} },
+                { nombre: "Aumento Volumen (+5%)", params: {...datosUltimoCalculo, volumen: Math.round(datosUltimoCalculo.volumen * 1.05)} }
             ];
 
             let scenariosTableHTML = "";
@@ -383,75 +369,91 @@
             });
             document.getElementById('scenariosTableBody').innerHTML = scenariosTableHTML;
 
-            // --- CONCLUSIONES GERENCIALES ---
+            // --- REPORTE ---
             let variableClave = impactos[0].variable;
-            let reportHTML = `
-                <p><strong>1. Sensibilidad y Prioridad:</strong> La variable con mayor impacto cuantitativo en la utilidad es <em>'${variableClave}'</em>. Se recomienda enfocar los esfuerzos en este factor.</p>
-                <p><strong>2. Umbral Operativo:</strong> Se requiere un volumen mínimo de ventas de <strong>${resBase.puntoEquilibrio} unidades</strong> para alcanzar el punto de equilibrio y cubrir los costos fijos totales.</p>
-                <p><strong>3. Rendimiento Óptimo:</strong> El escenario proyectado más favorable es <em>'${mejorNombreEscenario}'</em>.</p>
+            document.getElementById('gerencialReport').innerHTML = `
+                <p><strong>1. Sensibilidad:</strong> Mayor impacto en <em>'${variableClave}'</em>.</p>
+                <p><strong>2. Equilibrio:</strong> Se requieren <strong>${resBase.puntoEquilibrio} unidades</strong>.</p>
+                <p><strong>3. Óptimo:</strong> <em>'${mejorNombreEscenario}'</em>.</p>
             `;
-            document.getElementById('gerencialReport').innerHTML = reportHTML;
 
-            // --- GRÁFICA DE BARRAS ---
+            // --- GRÁFICA ---
             const r1 = resBase;
-            let pMP = {...baseData, precio_material: baseData.precio_material * 1.12};
-            const r2 = calcularModelo(pMP);
-            let pDesp = {...baseData, desperdicio: 9.0};
-            const r3 = calcularModelo(pDesp);
-            let pExt = {...baseData, precio_venta: baseData.precio_venta * 0.65};
-            const r4 = calcularModelo(pExt);
-
-            const etiquetas = ["Base", "MP +12%", "Desp. 9%", "Extremo"];
-            const utilidades = [r1.utilidad, r2.utilidad, r3.utilidad, r4.utilidad];
-            const costosUnitarios = [r1.costoUnitario, r2.costoUnitario, r3.costoUnitario, r4.costoUnitario];
+            const r2 = calcularModelo({...datosUltimoCalculo, precio_material: datosUltimoCalculo.precio_material * 1.12});
+            const r3 = calcularModelo({...datosUltimoCalculo, desperdicio: 9.0});
+            const r4 = calcularModelo({...datosUltimoCalculo, precio_venta: datosUltimoCalculo.precio_venta * 0.65});
 
             const ctx = document.getElementById('scenarioChart').getContext('2d');
-            if (myChart) {
-                myChart.destroy();
-            }
+            if (myChart) myChart.destroy();
 
             myChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: etiquetas,
+                    labels: ["Base", "MP +12%", "Desp. 9%", "Extremo"],
                     datasets: [
-                        {
-                            label: 'Utilidad Total (Q)',
-                            data: utilidades,
-                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1,
-                            yAxisID: 'y'
-                        },
-                        {
-                            label: 'Costo Unitario (Q)',
-                            data: costosUnitarios,
-                            backgroundColor: 'rgba(255, 99, 132, 0.6)',
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 1,
-                            yAxisID: 'y1'
-                        }
+                        { label: 'Utilidad (Q)', data: [r1.utilidad, r2.utilidad, r3.utilidad, r4.utilidad], backgroundColor: 'rgba(54, 162, 235, 0.6)', yAxisID: 'y' },
+                        { label: 'Costo Unit. (Q)', data: [r1.costoUnitario, r2.costoUnitario, r3.costoUnitario, r4.costoUnitario], backgroundColor: 'rgba(255, 99, 132, 0.6)', yAxisID: 'y1' }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        y: {
-                            type: 'linear',
-                            position: 'left',
-                            title: { display: true, text: 'Utilidad (Q)' }
-                        },
-                        y1: {
-                            type: 'linear',
-                            position: 'right',
-                            grid: { drawOnChartArea: false },
-                            title: { display: true, text: 'Costo Unitario (Q)' }
-                        }
+                        y: { type: 'linear', position: 'left', title: { display: true, text: 'Utilidad (Q)' } },
+                        y1: { type: 'linear', position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Costo Unit. (Q)' } }
                     }
                 }
             });
         }
+
+        // --- CONSULTA INTERACTIVA CON IA ---
+        document.getElementById('askAiBtn').addEventListener('click', async () => {
+            const apiKey = sessionStorage.getItem('gemini_api_key');
+            const pregunta = document.getElementById('aiPrompt').value.trim();
+            const container = document.getElementById('aiResponseContainer');
+            const responseText = document.getElementById('aiResponseText');
+
+            if (!apiKey) {
+                alert("Por favor configura tu API Key primero.");
+                return;
+            }
+            if (!pregunta) {
+                alert("Escribe una pregunta para la IA.");
+                return;
+            }
+            if (!datosUltimoCalculo) {
+                alert("Primero haz clic en 'Actualizar Análisis' para calcular los datos base.");
+                return;
+            }
+
+            container.classList.remove('hidden');
+            responseText.textContent = "🧠 Analizando consulta financiera con Gemini...";
+
+            const contexto = `
+                Actúa como un Director Financiero experto en Costos Industriales en Quetzales (Q). 
+                Datos actuales del producto: ${JSON.stringify(datosUltimoCalculo)}
+                Pregunta o escenario planteado por el gerente: "${pregunta}"
+                
+                Proporciona una respuesta ejecutiva, concisa y profesional basada en los cálculos financieros.
+            `;
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: contexto }] }] })
+                });
+
+                const data = await response.json();
+                if (data.candidates && data.candidates[0].content) {
+                    responseText.textContent = data.candidates[0].content.parts[0].text;
+                } else {
+                    responseText.textContent = "No se pudo obtener una respuesta de la IA.";
+                }
+            } catch (err) {
+                responseText.textContent = "Error de conexión con la API de Gemini: " + err.message;
+            }
+        });
 
         document.getElementById('calcBtn').addEventListener('click', ejecutarCalculo);
     </script>
