@@ -13,7 +13,7 @@
     <!-- CONTENEDOR PRINCIPAL -->
     <div class="max-w-7xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6 md:p-8">
         <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-1 text-center">Modelo de Costos Industriales y IA Gerencial</h1>
-        <p class="text-xs md:text-sm text-gray-500 mb-6 text-center">Modifica los parámetros a la izquierda para visualizar el impacto en tiempo real en la gráfica y resultados de la derecha.</p>
+        <p class="text-xs md:text-sm text-gray-500 mb-6 text-center">Ingresa los parámetros a la izquierda para visualizar el impacto en tiempo real en la gráfica y resultados de la derecha.</p>
         
         <!-- LAYOUT DE 2 COLUMNAS EN PARALELO -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
@@ -37,7 +37,7 @@
                                 </span>
                             </span>
                         </label>
-                        <input type="text" id="material" name="material" value="Aluminio" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                        <input type="text" id="material" name="material" placeholder="Ej. Aluminio" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
                     </div>
 
                     <!-- Consumo estándar -->
@@ -51,7 +51,7 @@
                                 </span>
                             </span>
                         </label>
-                        <input type="number" step="0.01" id="consumo_estandar" name="consumo_estandar" value="1" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                        <input type="number" step="0.01" id="consumo_estandar" name="consumo_estandar" placeholder="Ej. 1.00" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
                     </div>
 
                     <!-- Precio material -->
@@ -65,7 +65,7 @@
                                 </span>
                             </span>
                         </label>
-                        <input type="number" step="0.01" id="precio_material" name="precio_material" value="50" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                        <input type="number" step="0.01" id="precio_material" name="precio_material" placeholder="Ej. 50.00" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
                     </div>
 
                     <!-- Desperdicio -->
@@ -79,7 +79,7 @@
                                 </span>
                             </span>
                         </label>
-                        <input type="number" step="0.1" id="desperdicio" name="desperdicio" value="5" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                        <input type="number" step="0.1" id="desperdicio" name="desperdicio" placeholder="Ej. 5.0" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
                     </div>
 
                     <!-- Horas MOD -->
@@ -93,7 +93,7 @@
                                 </span>
                             </span>
                         </label>
-                        <input type="number" step="0.1" id="horas_mod" name="horas_mod" value="1" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                        <input type="number" step="0.1" id="horas_mod" name="horas_mod" placeholder="Ej. 1.0" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
                     </div>
 
                     <!-- Tarifa MOD -->
@@ -107,7 +107,7 @@
                                 </span>
                             </span>
                         </label>
-                        <input type="number" step="0.01" id="tarifa_mod" name="tarifa_mod" value="250" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                        <input type="number" step="0.01" id="tarifa_mod" name="tarifa_mod" placeholder="Ej. 25.00" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
                     </div>
 
                     <!-- CIF variable -->
@@ -121,7 +121,7 @@
                                 </span>
                             </span>
                         </label>
-                        <input type="number" step="0.01" id="cif_variable" name="cif_variable" value="250" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                        <input type="number" step="0.01" id="cif_variable" name="cif_variable" placeholder="Ej. 10.00" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
                     </div>
 
                     <!-- Costos fijos -->
@@ -135,7 +135,7 @@
                                 </span>
                             </span>
                         </label>
-                        <input type="number" step="0.01" id="costos_fijos" name="costos_fijos" value="400" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                        <input type="number" step="0.01" id="costos_fijos" name="costos_fijos" placeholder="Ej. 5000.00" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
                     </div>
 
                     <!-- Volumen -->
@@ -149,7 +149,7 @@
                                 </span>
                             </span>
                         </label>
-                        <input type="number" id="volumen" name="volumen" value="200" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                        <input type="number" id="volumen" name="volumen" placeholder="Ej. 1000" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
                     </div>
 
                     <!-- Precio venta -->
@@ -163,7 +163,7 @@
                                 </span>
                             </span>
                         </label>
-                        <input type="number" step="0.01" id="precio_venta" name="precio_venta" value="250" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                        <input type="number" step="0.01" id="precio_venta" name="precio_venta" placeholder="Ej. 120.00" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
                     </div>
 
                     <!-- Alerta -->
@@ -454,7 +454,6 @@
         }
 
         document.getElementById('calcBtn').addEventListener('click', ejecutarCalculo);
-        window.addEventListener('DOMContentLoaded', ejecutarCalculo);
     </script>
 </body>
 </html>
