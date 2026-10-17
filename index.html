@@ -44,9 +44,9 @@
                 <button type="button" id="changeKeyBtn" class="text-xs text-indigo-600 hover:underline ml-2">Cambiar API Key</button>
             </div>
         </div>
-        <p class="text-xs md:text-sm text-gray-500 mb-6 text-center">Ingresa los parámetros a la izquierda para visualizar el impacto en tiempo real en las gráficas, tablas y reportes de la derecha.</p>
+        <p class="text-xs md:text-sm text-gray-500 mb-6 text-center">Ingresa los parámetros a la izquierda para visualizar el impacto en tiempo real en las tablas, reportes y gráficas inferiores.</p>
         
-        <!-- LAYOUT DE 2 COLUMNAS EN PARALELO -->
+        <!-- LAYOUT PRINCIPAL DE 2 COLUMNAS -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             
             <!-- COLUMNA IZQUIERDA: FORMULARIO DE PARÁMETROS -->
@@ -209,7 +209,7 @@
                 </form>
             </div>
 
-            <!-- COLUMNA DERECHA: RESULTADOS, GRÁFICAS, TABLAS Y REPORTES -->
+            <!-- COLUMNA DERECHA: RESULTADOS, TABLAS, REPORTES Y ASISTENTE IA -->
             <div class="lg:col-span-7 bg-gray-50 p-5 rounded-xl border space-y-4">
                 <div class="flex flex-col sm:flex-row justify-between items-center gap-2">
                     <h2 class="text-lg font-bold text-gray-800">Análisis y Resultados</h2>
@@ -231,22 +231,6 @@
                     <div class="bg-white p-3 rounded-lg shadow-sm border">
                         <p class="text-[11px] text-gray-500 uppercase font-semibold">Punto de Equilibrio</p>
                         <p id="res_pe" class="text-base font-bold text-blue-600 mt-0.5">0 un.</p>
-                    </div>
-                </div>
-
-                <!-- GRÁFICA 1: PUNTO DE EQUILIBRIO (LÍNEAS) -->
-                <div class="bg-white p-3 rounded-lg shadow-sm border">
-                    <h3 class="text-xs font-bold text-gray-700 mb-2 text-center">📈 Gráfica de Punto de Equilibrio</h3>
-                    <div class="relative w-full h-64">
-                        <canvas id="breakEvenChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- GRÁFICA 2: SENSIBILIDAD (BARRAS) -->
-                <div class="bg-white p-3 rounded-lg shadow-sm border">
-                    <h3 class="text-xs font-bold text-gray-700 mb-2 text-center">📊 Comparativa de Escenarios de Sensibilidad</h3>
-                    <div class="relative w-full h-44">
-                        <canvas id="scenarioChart"></canvas>
                     </div>
                 </div>
 
@@ -283,7 +267,7 @@
                     </div>
                 </div>
 
-                <!-- REPORTE GERENCIAL ESCRITO -->
+                <!-- REPORTE GERENCIAL ESCRITO, VIABILIDAD Y RIESGOS -->
                 <div class="bg-white p-4 rounded-lg shadow-sm border space-y-3">
                     <h3 class="text-xs font-bold text-gray-800 uppercase border-b pb-1">Reporte Gerencial, Viabilidad y Evaluación de Riesgos</h3>
                     <div id="gerencialReport" class="text-xs text-gray-600 space-y-2"></div>
@@ -310,6 +294,26 @@
             </div>
 
         </div>
+
+        <!-- SECCIÓN INFERIOR: GRÁFICAS LADO A LADO -->
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- GRÁFICA 1: PUNTO DE EQUILIBRIO (LÍNEAS) -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border">
+                <h3 class="text-xs font-bold text-gray-700 mb-2 text-center">📈 Gráfica de Punto de Equilibrio</h3>
+                <div class="relative w-full h-64">
+                    <canvas id="breakEvenChart"></canvas>
+                </div>
+            </div>
+
+            <!-- GRÁFICA 2: SENSIBILIDAD (BARRAS) -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border">
+                <h3 class="text-xs font-bold text-gray-700 mb-2 text-center">📊 Comparativa de Escenarios de Sensibilidad</h3>
+                <div class="relative w-full h-64">
+                    <canvas id="scenarioChart"></canvas>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -417,7 +421,6 @@
 
             alertContainer.classList.add('hidden');
 
-            // Leemos valores ingresados
             const pInput = {
                 material: document.getElementById('material').value,
                 consumo_estandar: parseFloat(document.getElementById('consumo_estandar').value),
@@ -431,7 +434,6 @@
                 precio_venta: parseFloat(document.getElementById('precio_venta').value)
             };
 
-            // Aplicamos factor de conversión de moneda para la presentación
             datosUltimoCalculo = { ...pInput };
 
             const pConvertido = {
@@ -550,10 +552,10 @@
             });
             document.getElementById('scenariosTableBody').innerHTML = scenariosTableHTML;
 
-            // ANALISIS DE VIABILIDAD
+            // ANALISIS DE VIABILIDAD Y RIESGOS
             let estadoViabilidad = "";
             let badgeViabilidad = "";
-            let margenPorcentaje = (resBase.margenContribucionUnitario / pConvertido.precio_venta) * 100;
+            let margenPorcentaje = pConvertido.precio_venta > 0 ? (resBase.margenContribucionUnitario / pConvertido.precio_venta) * 100 : 0;
 
             if (resBase.utilidad > 0 && pConvertido.volumen > resBase.puntoEquilibrio * 1.15) {
                 estadoViabilidad = "ALTAMENTE VIABLE. El proyecto/producto proyecta márgenes sólidos de ganancia y opera holgadamente por encima del punto de equilibrio.";
@@ -566,16 +568,14 @@
                 badgeViabilidad = `<span class="bg-red-100 text-red-800 text-[10px] font-bold px-2 py-0.5 rounded border border-red-300">NO VIABLE</span>`;
             }
 
-            // EVALUACIÓN DE RIESGOS AL USAR EL PRODUCTO/MATERIAL
             let riesgosHTML = `
                 <ul class="list-disc pl-4 space-y-1 text-gray-600">
-                    <li><strong>Riesgo Operativo de Desperdicio (${pConvertido.desperdicio}%):</strong> ${pConvertido.desperdicio > 5 ? 'Nivel Alto. El porcentaje de merma actual reduce directamente el margen de contribución.' : 'Nivel Bajo/Controlado.'} Se aconseja estandarizar la técnica de manufactura.</li>
-                    <li><strong>Riesgo Volatilidad Materia Prima (${pConvertido.material || 'Material Base'}):</strong> Sensibilidad relevante ante variaciones de precios de insumos en el mercado global o local.</li>
-                    <li><strong>Riesgo Estructural (Costos Fijos):</strong> Representan ${curr.symbol}${pConvertido.costos_fijos.toFixed(2)}. Un bajón en volumen por debajo de ${resBase.puntoEquilibrio} unidades generará déficit financiero.</li>
+                    <li><strong>Riesgo Operativo de Desperdicio (${pConvertido.desperdicio}%):</strong> ${pConvertido.desperdicio > 5 ? 'Nivel Alto. El porcentaje de merma actual reduce directamente el margen.' : 'Nivel Bajo/Controlado.'} Se aconseja estandarizar la técnica de manufactura.</li>
+                    <li><strong>Riesgo Volatilidad Materia Prima (${pConvertido.material || 'Material Base'}):</strong> Sensibilidad relevante ante variaciones de precios de insumos en el mercado.</li>
+                    <li><strong>Riesgo Estructural (Costos Fijos):</strong> Representan ${curr.symbol}${pConvertido.costos_fijos.toFixed(2)}. Un descenso por debajo de ${resBase.puntoEquilibrio} unidades generará déficit financiero.</li>
                 </ul>
             `;
 
-            // REPORTE GERENCIAL EXPANDIDO
             let variableClave = impactos[0].variable;
             let reportHTML = `
                 <div class="flex items-center justify-between border-b pb-1">
@@ -622,7 +622,7 @@
                 
                 Pregunta del usuario sobre el producto/costos/riesgos: "${pregunta}"
                 
-                Responde en español de forma ejecutiva, concisa, profesional y estructurada. Incluye análisis de viabilidad o riesgos si es relevante.
+                Responde en español de forma ejecutiva, concisa, profesional y estructurada.
             `;
 
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`;
