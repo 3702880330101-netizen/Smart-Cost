@@ -280,7 +280,7 @@
         <!-- SECCIÓN INFERIOR: GRÁFICAS LADO A LADO CON EXPLICACIONES -->
         <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
             
-            <!-- GRÁFICA 1: PUNTO DE EQUILIBRIO (DINÁMICA E INTERACTIVA) -->
+            <!-- GRÁFICA 1: PUNTO DE EQUILIBRIO (ESCALA Y MONTOS DINÁMICOS) -->
             <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 flex flex-col justify-between">
                 <div>
                     <h3 class="text-sm font-bold text-gray-800 mb-3 text-center">📈 Gráfica de Punto de Equilibrio</h3>
@@ -505,17 +505,15 @@
             document.getElementById('res_utilidad').textContent = `${curr.symbol}${resBase.utilidad.toFixed(2)}`;
             document.getElementById('res_pe').textContent = `${resBase.puntoEquilibrio} un.`;
 
-            // --- GRÁFICA 1: PUNTO DE EQUILIBRIO (DINÁMICA E INTERACTIVA) ---
+            // --- GRÁFICA 1: PUNTO DE EQUILIBRIO (MONTOS DINÁMICOS Y ESCALA RECALCULADA) ---
             const pe = resBase.puntoEquilibrio;
-            const maxVol = Math.max(pConvertido.volumen, pe * 1.5, 50);
+            const maxVol = Math.max(pConvertido.volumen, pe * 1.5, 10);
             
-            // Generación de puntos X dinámicos espaciados uniformemente
-            const numPuntos = 12;
+            const numPuntos = 8;
             let puntosX = [];
             for (let i = 0; i <= numPuntos; i++) {
                 puntosX.push(Math.round((maxVol / numPuntos) * i));
             }
-            // Asegurarse de insertar el punto exacto de equilibrio si es válido
             if (pe > 0 && !puntosX.includes(pe)) {
                 puntosX.push(pe);
                 puntosX.sort((a, b) => a - b);
@@ -525,6 +523,13 @@
             const variableCostsData = puntosX.map(x => resBase.costoVariableUnitario * x);
             const totalCostsData = puntosX.map(x => pConvertido.costos_fijos + (resBase.costoVariableUnitario * x));
             const totalRevenueData = puntosX.map(x => pConvertido.precio_venta * x);
+
+            // Determinar monto máximo dinámico para ajustar la escala del eje Y
+            const maxMonto = Math.max(
+                ...fixedCostsData, 
+                ...totalCostsData, 
+                ...totalRevenueData
+            );
 
             const ctx1 = document.getElementById('breakEvenChart').getContext('2d');
             if (breakEvenChartInstance) breakEvenChartInstance.destroy();
@@ -544,8 +549,14 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        x: { title: { display: true, text: 'Volumen de Unidades (u.)' } },
-                        y: { title: { display: true, text: `Monto (${curr.symbol})` } }
+                        x: { 
+                            title: { display: true, text: 'Volumen de Unidades (u.)' } 
+                        },
+                        y: { 
+                            beginAtZero: true,
+                            suggestedMax: maxMonto > 0 ? maxMonto * 1.1 : 100, // Ajusta automáticamente la escala según los montos
+                            title: { display: true, text: `Monto (${curr.symbol})` } 
+                        }
                     }
                 }
             });
