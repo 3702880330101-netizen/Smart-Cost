@@ -326,7 +326,7 @@
 
     </div>
 
-    <!-- BOTÓN FLOTANTE Y VENTANA DE CHAT DE IA CON HISTORIAL -->
+    <!-- BOTÓN FLOTANTE Y VENTANA DE CHAT DE IA CON DESPLAZAMIENTO (SCROLLBAR) -->
     <div class="fixed bottom-6 right-6 z-50">
         <button id="floatingAiBtn" class="bg-orange-600 hover:bg-orange-700 text-white font-bold p-4 rounded-full shadow-2xl transition duration-300 flex items-center gap-2 cursor-pointer group scale-105" title="Consultar con IA Gerencial">
             <span class="text-3xl">🤖</span>
@@ -334,18 +334,18 @@
         </button>
     </div>
 
-    <!-- MODAL / VENTANA FLOTANTE DEL CHAT CON HISTORIAL -->
+    <!-- MODAL / VENTANA FLOTANTE DEL CHAT CON SCROLL INTEGRADO -->
     <div id="aiChatModal" class="fixed bottom-24 right-6 z-50 w-[92vw] sm:w-[500px] md:w-[580px] bg-white rounded-2xl shadow-2xl border border-gray-300 hidden flex flex-col overflow-hidden transition-all duration-300">
         <div class="bg-indigo-900 text-white p-4 flex justify-between items-center shadow">
             <h3 class="text-base font-bold flex items-center gap-2"><span>🤖</span> Consultas Gerenciales con IA de Gemini</h3>
             <button type="button" id="closeAiModalBtn" class="text-white hover:text-gray-200 text-lg font-bold cursor-pointer px-2">✕</button>
         </div>
-        <div class="p-5 space-y-3 bg-gray-50 flex-1 flex flex-col h-[500px]">
+        <div class="p-5 space-y-3 bg-gray-50 flex-1 flex flex-col max-h-[75vh]">
             <p class="text-xs text-gray-600 font-medium">Historial de consultas de tu sesión actual con el director financiero virtual:</p>
             
-            <!-- Contenedor del Historial de Chat (Scrollable) -->
-            <div id="chatMessagesContainer" class="flex-1 bg-white rounded-xl border border-gray-200 p-3 overflow-y-auto space-y-3 shadow-inner">
-                <div class="text-xs text-gray-400 text-center italic mt-20">Realiza tu primera consulta abajo. El historial se mantendrá visible aquí.</div>
+            <!-- Contenedor del Historial de Chat con Scrollbar Habilitado -->
+            <div id="chatMessagesContainer" class="flex-1 bg-white rounded-xl border border-gray-200 p-3.5 overflow-y-auto space-y-4 shadow-inner max-h-[50vh]">
+                <div class="text-xs text-gray-400 text-center italic my-12">Realiza tu primera consulta abajo. El historial se mantendrá visible aquí.</div>
             </div>
 
             <!-- Controles de Entrada -->
@@ -362,7 +362,7 @@
         let breakEvenChartInstance = null;
         let scenarioChartInstance = null;
         let datosUltimoCalculo = null;
-        let chatMessages = []; // Almacena el historial completo de la sesión
+        let chatMessages = []; 
 
         // GESTIÓN DEL BOTÓN Y MODAL FLOTANTE DE IA
         const floatingAiBtn = document.getElementById('floatingAiBtn');
@@ -666,11 +666,11 @@
             document.getElementById('gerencialReport').innerHTML = reportHTML;
         }
 
-        // --- GESTIÓN DE HISTORIAL DE CHAT CON LA IA ---
+        // --- GESTIÓN DE HISTORIAL DE CHAT CON LA IA Y BARRA DE DESPLAZAMIENTO ---
         function renderChatHistory() {
             const container = document.getElementById('chatMessagesContainer');
             if (chatMessages.length === 0) {
-                container.innerHTML = `<div class="text-xs text-gray-400 text-center italic mt-20">Realiza tu primera consulta abajo. El historial se mantendrá visible aquí.</div>`;
+                container.innerHTML = `<div class="text-xs text-gray-400 text-center italic my-12">Realiza tu primera consulta abajo. El historial se mantendrá visible aquí.</div>`;
                 return;
             }
 
@@ -679,7 +679,7 @@
                 if (msg.remitente === 'usuario') {
                     html += `
                         <div class="flex flex-col items-end">
-                            <div class="bg-indigo-600 text-white text-xs sm:text-sm rounded-2xl rounded-tr-none px-3.5 py-2.5 max-w-[85%] shadow-sm whitespace-pre-line font-medium">
+                            <div class="bg-indigo-600 text-white text-xs sm:text-sm rounded-2xl rounded-tr-none px-4 py-2.5 max-w-[85%] shadow-sm whitespace-pre-line font-medium">
                                 ${msg.texto}
                             </div>
                             <span class="text-[10px] text-gray-400 mt-0.5 mr-1">Tú</span>
@@ -687,10 +687,10 @@
                     `;
                 } else {
                     html += `
-                        <div class="flex flex-col items-start">
-                            <div class="bg-indigo-50 border border-indigo-100 text-gray-800 text-xs sm:text-sm rounded-2xl rounded-tl-none px-3.5 py-2.5 max-w-[85%] shadow-sm whitespace-pre-line leading-relaxed">
-                                <p class="font-bold text-indigo-900 mb-1">Asistente IA:</p>
-                                <div>${msg.texto}</div>
+                        <div class="flex flex-col items-start w-full">
+                            <div class="bg-indigo-50 border border-indigo-100 text-gray-800 text-xs sm:text-sm rounded-2xl rounded-tl-none px-4 py-3 w-full shadow-sm">
+                                <p class="font-bold text-indigo-900 mb-1.5 border-b border-indigo-200 pb-1">Asistente IA:</p>
+                                <div class="max-h-60 overflow-y-auto pr-2 text-xs sm:text-sm leading-relaxed whitespace-pre-line">${msg.texto}</div>
                             </div>
                             <span class="text-[10px] text-gray-400 mt-0.5 ml-1">Gemini</span>
                         </div>
@@ -715,14 +715,11 @@
                 return;
             }
 
-            // Limpiar input
             document.getElementById('aiPrompt').value = '';
 
-            // Agregar mensaje del usuario al historial
             chatMessages.push({ remitente: 'usuario', texto: pregunta });
             renderChatHistory();
 
-            // Agregar indicador de carga temporal
             const cargaId = 'msg_' + Date.now();
             chatMessages.push({ remitente: 'ia', texto: '🧠 Consultando con la IA de Gemini...', id: cargaId });
             renderChatHistory();
@@ -761,7 +758,6 @@
                     respuestaIa = "⚠️ La API respondió pero no generó texto. Verifica que tu clave de API tenga permisos activos.";
                 }
 
-                // Reemplazar mensaje de carga por la respuesta real
                 const indexCarga = chatMessages.findIndex(m => m.id === cargaId);
                 if (indexCarga !== -1) {
                     chatMessages[indexCarga] = { remitente: 'ia', texto: respuestaIa };
