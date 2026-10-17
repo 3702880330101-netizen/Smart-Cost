@@ -280,7 +280,7 @@
         <!-- SECCIÓN INFERIOR: GRÁFICAS LADO A LADO CON EXPLICACIONES -->
         <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
             
-            <!-- GRÁFICA 1: PUNTO DE EQUILIBRIO -->
+            <!-- GRÁFICA 1: PUNTO DE EQUILIBRIO (DINÁMICA E INTERACTIVA) -->
             <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 flex flex-col justify-between">
                 <div>
                     <h3 class="text-sm font-bold text-gray-800 mb-3 text-center">📈 Gráfica de Punto de Equilibrio</h3>
@@ -505,10 +505,21 @@
             document.getElementById('res_utilidad').textContent = `${curr.symbol}${resBase.utilidad.toFixed(2)}`;
             document.getElementById('res_pe').textContent = `${resBase.puntoEquilibrio} un.`;
 
-            // DIBUJO DE LA GRÁFICA 1: EQUILIBRIO
+            // --- GRÁFICA 1: PUNTO DE EQUILIBRIO (DINÁMICA E INTERACTIVA) ---
             const pe = resBase.puntoEquilibrio;
             const maxVol = Math.max(pConvertido.volumen, pe * 1.5, 50);
-            const puntosX = [0, Math.round(pe * 0.33), Math.round(pe * 0.66), pe, Math.round(pe * 1.25), Math.round(maxVol)];
+            
+            // Generación de puntos X dinámicos espaciados uniformemente
+            const numPuntos = 12;
+            let puntosX = [];
+            for (let i = 0; i <= numPuntos; i++) {
+                puntosX.push(Math.round((maxVol / numPuntos) * i));
+            }
+            // Asegurarse de insertar el punto exacto de equilibrio si es válido
+            if (pe > 0 && !puntosX.includes(pe)) {
+                puntosX.push(pe);
+                puntosX.sort((a, b) => a - b);
+            }
             
             const fixedCostsData = puntosX.map(() => pConvertido.costos_fijos);
             const variableCostsData = puntosX.map(x => resBase.costoVariableUnitario * x);
@@ -523,10 +534,10 @@
                 data: {
                     labels: puntosX,
                     datasets: [
-                        { label: 'Costos Fijos', data: fixedCostsData, borderColor: 'rgba(59, 130, 246, 1)', backgroundColor: 'rgba(59, 130, 246, 1)', borderWidth: 2, pointRadius: 4, tension: 0.1 },
-                        { label: 'Costos Variables', data: variableCostsData, borderColor: 'rgba(249, 115, 22, 1)', backgroundColor: 'rgba(249, 115, 22, 1)', borderWidth: 2, pointRadius: 4, tension: 0.1 },
-                        { label: 'Costos Totales', data: totalCostsData, borderColor: 'rgba(14, 165, 233, 1)', backgroundColor: 'rgba(14, 165, 233, 1)', borderWidth: 3, pointRadius: 5, tension: 0.1 },
-                        { label: 'Ingresos por Ventas', data: totalRevenueData, borderColor: 'rgba(234, 179, 8, 1)', backgroundColor: 'rgba(234, 179, 8, 1)', borderWidth: 3, pointRadius: 5, tension: 0.1 }
+                        { label: 'Costos Fijos', data: fixedCostsData, borderColor: 'rgba(59, 130, 246, 1)', backgroundColor: 'rgba(59, 130, 246, 1)', borderWidth: 2, pointRadius: 3, tension: 0.1 },
+                        { label: 'Costos Variables', data: variableCostsData, borderColor: 'rgba(249, 115, 22, 1)', backgroundColor: 'rgba(249, 115, 22, 1)', borderWidth: 2, pointRadius: 3, tension: 0.1 },
+                        { label: 'Costos Totales', data: totalCostsData, borderColor: 'rgba(14, 165, 233, 1)', backgroundColor: 'rgba(14, 165, 233, 1)', borderWidth: 3, pointRadius: 4, tension: 0.1 },
+                        { label: 'Ingresos por Ventas', data: totalRevenueData, borderColor: 'rgba(234, 179, 8, 1)', backgroundColor: 'rgba(234, 179, 8, 1)', borderWidth: 3, pointRadius: 4, tension: 0.1 }
                     ]
                 },
                 options: {
@@ -539,7 +550,7 @@
                 }
             });
 
-            // DIBUJO DE LA GRÁFICA 2: SENSIBILIDAD
+            // --- GRÁFICA 2: SENSIBILIDAD ---
             const r1 = resBase;
             const r2 = calcularModelo({...pConvertido, precio_material: pConvertido.precio_material * 1.12});
             const r3 = calcularModelo({...pConvertido, desperdicio: 9.0});
