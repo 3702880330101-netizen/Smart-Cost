@@ -19,7 +19,7 @@
                 <p class="text-sm text-gray-600 mt-1">Ingresa tu Clave de API de Google AI para habilitar el asistente de consultas gerenciales en tiempo real.</p>
             </div>
             <input type="password" id="apiKeyInput" placeholder="Pega tu clave de API aquí..." class="w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-base mb-4">
-            <button type="button" id="saveApiKeyBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg shadow transition duration-200 text-base">
+            <button type="button" id="saveApiKeyBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg shadow transition duration-200 text-base cursor-pointer">
                 Iniciar Sistema
             </button>
             <p id="apiKeyError" class="text-sm text-red-500 mt-2 hidden">Por favor ingresa una clave válida.</p>
@@ -41,7 +41,7 @@
                     <option value="MXN" data-symbol="$" data-rate="2.55">Peso Mex (MXN - $)</option>
                     <option value="COP" data-symbol="$" data-rate="550.0">Peso Col (COP - $)</option>
                 </select>
-                <button type="button" id="changeKeyBtn" class="text-xs text-indigo-600 hover:underline ml-2 font-semibold">Cambiar API Key</button>
+                <button type="button" id="changeKeyBtn" class="text-xs text-indigo-600 hover:underline ml-2 font-semibold cursor-pointer">Cambiar API Key</button>
             </div>
         </div>
         <p class="text-sm md:text-base text-gray-600 mb-6 text-center">Ingresa los parámetros a la izquierda para visualizar el impacto en tiempo real en las tablas, reportes y gráficas inferiores.</p>
@@ -58,99 +58,29 @@
                     <!-- Material -->
                     <div class="sm:col-span-2">
                         <label class="flex items-center justify-between text-sm font-semibold text-gray-800 mb-1">
-                            <span>Material (Descripción)</span>
+                            <span>Material / Producto (Descripción)</span>
                             <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 text-xs">
                                 ℹ️
                                 <span class="absolute bottom-full mb-1 hidden group-hover:block w-56 bg-gray-900 text-white text-xs rounded p-2 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Nombre o tipo de materia prima principal utilizada (Ej. Aluminio, Acero).
+                                    Nombre del producto o materia prima principal analizada (Ej. Suprasil, Acero).
                                 </span>
                             </span>
                         </label>
-                        <input type="text" id="material" name="material" class="block w-full rounded-lg border-gray-300 shadow-sm border p-2.5 bg-white text-base font-medium">
+                        <input type="text" id="material" name="material" value="Suprasil" class="block w-full rounded-lg border-gray-300 shadow-sm border p-2.5 bg-white text-base font-medium">
                     </div>
 
-                    <!-- Consumo estándar -->
-                    <div>
+                    <!-- Costo Variable Unitario -->
+                    <div class="sm:col-span-2">
                         <label class="flex items-center justify-between text-sm font-semibold text-gray-800 mb-1">
-                            <span>Consumo estándar</span>
+                            <span>Costo variable unitario (<span class="currencySymbol">Q</span>)</span>
                             <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 text-xs">
                                 ℹ️
                                 <span class="absolute bottom-full mb-1 hidden group-hover:block w-56 bg-gray-900 text-white text-xs rounded p-2 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Cantidad neta de material requerida para fabricar una unidad.
+                                    Costo variable total por unidad (Ej. 700).
                                 </span>
                             </span>
                         </label>
-                        <input type="number" step="0.01" id="consumo_estandar" name="consumo_estandar" class="block w-full rounded-lg border-gray-300 shadow-sm border p-2.5 bg-white text-base font-medium">
-                    </div>
-
-                    <!-- Precio material -->
-                    <div>
-                        <label class="flex items-center justify-between text-sm font-semibold text-gray-800 mb-1">
-                            <span>Precio material (<span class="currencySymbol">Q</span>)</span>
-                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 text-xs">
-                                ℹ️
-                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-56 bg-gray-900 text-white text-xs rounded p-2 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Costo unitario de adquisición de la materia prima.
-                                </span>
-                            </span>
-                        </label>
-                        <input type="number" step="0.01" id="precio_material" name="precio_material" class="block w-full rounded-lg border-gray-300 shadow-sm border p-2.5 bg-white text-base font-medium">
-                    </div>
-
-                    <!-- Desperdicio -->
-                    <div>
-                        <label class="flex items-center justify-between text-sm font-semibold text-gray-800 mb-1">
-                            <span>Desperdicio (%)</span>
-                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 text-xs">
-                                ℹ️
-                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-56 bg-gray-900 text-white text-xs rounded p-2 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Porcentaje estimado de material que se desecha en producción.
-                                </span>
-                            </span>
-                        </label>
-                        <input type="number" step="0.1" id="desperdicio" name="desperdicio" class="block w-full rounded-lg border-gray-300 shadow-sm border p-2.5 bg-white text-base font-medium">
-                    </div>
-
-                    <!-- Horas MOD -->
-                    <div>
-                        <label class="flex items-center justify-between text-sm font-semibold text-gray-800 mb-1">
-                            <span>Horas MOD</span>
-                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 text-xs">
-                                ℹ️
-                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-56 bg-gray-900 text-white text-xs rounded p-2 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Horas de Mano de Obra Directa por unidad.
-                                </span>
-                            </span>
-                        </label>
-                        <input type="number" step="0.1" id="horas_mod" name="horas_mod" class="block w-full rounded-lg border-gray-300 shadow-sm border p-2.5 bg-white text-base font-medium">
-                    </div>
-
-                    <!-- Tarifa MOD -->
-                    <div>
-                        <label class="flex items-center justify-between text-sm font-semibold text-gray-800 mb-1">
-                            <span>Tarifa MOD (<span class="currencySymbol">Q</span>/h)</span>
-                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 text-xs">
-                                ℹ️
-                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-56 bg-gray-900 text-white text-xs rounded p-2 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Costo por hora pagado al personal de producción directo.
-                                </span>
-                            </span>
-                        </label>
-                        <input type="number" step="0.01" id="tarifa_mod" name="tarifa_mod" class="block w-full rounded-lg border-gray-300 shadow-sm border p-2.5 bg-white text-base font-medium">
-                    </div>
-
-                    <!-- CIF variable -->
-                    <div>
-                        <label class="flex items-center justify-between text-sm font-semibold text-gray-800 mb-1">
-                            <span>CIF variable (<span class="currencySymbol">Q</span>)</span>
-                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 text-xs">
-                                ℹ️
-                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-56 bg-gray-900 text-white text-xs rounded p-2 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Costos Indirectos de Fabricación variables por unidad.
-                                </span>
-                            </span>
-                        </label>
-                        <input type="number" step="0.01" id="cif_variable" name="cif_variable" class="block w-full rounded-lg border-gray-300 shadow-sm border p-2.5 bg-white text-base font-medium">
+                        <input type="number" step="0.01" id="costo_variable_unitario" name="costo_variable_unitario" value="700" class="block w-full rounded-lg border-gray-300 shadow-sm border p-2.5 bg-white text-base font-medium">
                     </div>
 
                     <!-- Costos fijos -->
@@ -160,11 +90,11 @@
                             <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 text-xs">
                                 ℹ️
                                 <span class="absolute bottom-full mb-1 hidden group-hover:block w-56 bg-gray-900 text-white text-xs rounded p-2 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Gastos operativos totales fijos del período.
+                                    Gastos operativos fijos totales (Ej. 60000).
                                 </span>
                             </span>
                         </label>
-                        <input type="number" step="0.01" id="costos_fijos" name="costos_fijos" class="block w-full rounded-lg border-gray-300 shadow-sm border p-2.5 bg-white text-base font-medium">
+                        <input type="number" step="0.01" id="costos_fijos" name="costos_fijos" value="60000" class="block w-full rounded-lg border-gray-300 shadow-sm border p-2.5 bg-white text-base font-medium">
                     </div>
 
                     <!-- Volumen -->
@@ -174,11 +104,11 @@
                             <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 text-xs">
                                 ℹ️
                                 <span class="absolute bottom-full mb-1 hidden group-hover:block w-56 bg-gray-900 text-white text-xs rounded p-2 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Cantidad total de unidades a fabricar y vender.
+                                    Cantidad total a fabricar y vender (Ej. 70).
                                 </span>
                             </span>
                         </label>
-                        <input type="number" id="volumen" name="volumen" class="block w-full rounded-lg border-gray-300 shadow-sm border p-2.5 bg-white text-base font-medium">
+                        <input type="number" id="volumen" name="volumen" value="70" class="block w-full rounded-lg border-gray-300 shadow-sm border p-2.5 bg-white text-base font-medium">
                     </div>
 
                     <!-- Precio venta -->
@@ -188,11 +118,11 @@
                             <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 text-xs">
                                 ℹ️
                                 <span class="absolute bottom-full mb-1 hidden group-hover:block w-56 bg-gray-900 text-white text-xs rounded p-2 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Precio al cual se comercializa cada unidad terminada.
+                                    Precio de comercialización por unidad (Ej. 1900).
                                 </span>
                             </span>
                         </label>
-                        <input type="number" step="0.01" id="precio_venta" name="precio_venta" class="block w-full rounded-lg border-gray-300 shadow-sm border p-2.5 bg-white text-base font-medium">
+                        <input type="number" step="0.01" id="precio_venta" name="precio_venta" value="1900" class="block w-full rounded-lg border-gray-300 shadow-sm border p-2.5 bg-white text-base font-medium">
                     </div>
 
                     <!-- Alerta -->
@@ -315,7 +245,7 @@
                     <p class="font-medium">Compara el comportamiento financiero bajo cuatro escenarios de estrés o mejora:</p>
                     <ul class="list-disc pl-5 space-y-1 text-gray-700">
                         <li><strong>Escenario Base:</strong> Resultados con los parámetros actuales ingresados.</li>
-                        <li><strong>Incremento de Materia Prima (+12%) o Desperdicio (9%):</strong> Simula el impacto de costos adversos.</li>
+                        <li><strong>Incremento de Costo Variable (+12%):</strong> Simula el impacto de costos adversos.</li>
                         <li><strong>Reducción de Precio (-15%):</strong> Evalúa la competitividad ante ajustes de mercado.</li>
                         <li><strong>Utilidad Total (Barras Azules - Eje Izq.) vs Costo Unitario (Barras Rosas - Eje Der.).</strong></li>
                     </ul>
@@ -326,7 +256,7 @@
 
     </div>
 
-    <!-- BOTÓN FLOTANTE Y VENTANA DE CHAT DE IA CON DESPLAZAMIENTO (SCROLLBAR) -->
+    <!-- BOTÓN FLOTANTE Y VENTANA DE CHAT DE IA CON DESPLAZAMIENTO -->
     <div class="fixed bottom-6 right-6 z-50">
         <button id="floatingAiBtn" class="bg-orange-600 hover:bg-orange-700 text-white font-bold p-4 rounded-full shadow-2xl transition duration-300 flex items-center gap-2 cursor-pointer group scale-105" title="Consultar con IA Gerencial">
             <span class="text-3xl">🤖</span>
@@ -350,7 +280,7 @@
 
             <!-- Controles de Entrada -->
             <div class="flex gap-2 pt-1">
-                <input type="text" id="aiPrompt" placeholder="Ej. ¿Qué riesgos implica utilizar este material?" class="flex-1 text-sm border border-gray-300 rounded-xl p-3 focus:ring-indigo-500 focus:border-indigo-500 bg-white font-medium shadow-sm">
+                <input type="text" id="aiPrompt" placeholder="Ej. ¿Qué riesgos implica este costo variable?" class="flex-1 text-sm border border-gray-300 rounded-xl p-3 focus:ring-indigo-500 focus:border-indigo-500 bg-white font-medium shadow-sm">
                 <button type="button" id="askAiBtn" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-5 rounded-xl text-sm transition duration-200 cursor-pointer shadow">
                     Enviar
                 </button>
@@ -409,6 +339,7 @@
                 document.getElementById('apiModal').classList.add('hidden');
             }
             updateCurrencyLabels();
+            ejecutarCalculo(); // Calcular automáticamente con los datos por defecto del Excel
         });
 
         document.getElementById('saveApiKeyBtn').addEventListener('click', () => {
@@ -430,10 +361,7 @@
         });
 
         function calcularModelo(p) {
-            const materialAjustado = p.consumo_estandar * (1 + (p.desperdicio / 100));
-            const costoMpUnitario = materialAjustado * p.precio_material;
-            const costoModUnitario = p.horas_mod * p.tarifa_mod;
-            const costoVariableUnitario = costoMpUnitario + costoModUnitario + p.cif_variable;
+            const costoVariableUnitario = p.costo_variable_unitario;
             const costoTotal = (costoVariableUnitario * p.volumen) + p.costos_fijos;
             const costoUnitario = p.volumen > 0 ? costoTotal / p.volumen : 0;
             const margenContribucionUnitario = p.precio_venta - costoVariableUnitario;
@@ -449,15 +377,10 @@
             const curr = getCurrentCurrency();
 
             const campos = [
-                { id: 'material', nombre: 'Material (Descripción)' },
-                { id: 'consumo_estandar', nombre: 'Consumo estándar' },
-                { id: 'precio_material', nombre: 'Precio del material' },
-                { id: 'desperdicio', nombre: 'Desperdicio (%)' },
-                { id: 'horas_mod', nombre: 'Horas MOD' },
-                { id: 'tarifa_mod', nombre: 'Tarifa MOD' },
-                { id: 'cif_variable', nombre: 'CIF variable' },
+                { id: 'material', nombre: 'Material / Producto' },
+                { id: 'costo_variable_unitario', nombre: 'Costo variable unitario' },
                 { id: 'costos_fijos', nombre: 'Costos fijos' },
-                { id: 'volumen', nombre: 'Volumen / Unidades producidas' },
+                { id: 'volumen', nombre: 'Volumen / Unidades' },
                 { id: 'precio_venta', nombre: 'Precio de venta unitario' }
             ];
 
@@ -479,12 +402,7 @@
 
             const pInput = {
                 material: document.getElementById('material').value,
-                consumo_estandar: parseFloat(document.getElementById('consumo_estandar').value),
-                precio_material: parseFloat(document.getElementById('precio_material').value),
-                desperdicio: parseFloat(document.getElementById('desperdicio').value),
-                horas_mod: parseFloat(document.getElementById('horas_mod').value),
-                tarifa_mod: parseFloat(document.getElementById('tarifa_mod').value),
-                cif_variable: parseFloat(document.getElementById('cif_variable').value),
+                costo_variable_unitario: parseFloat(document.getElementById('costo_variable_unitario').value),
                 costos_fijos: parseFloat(document.getElementById('costos_fijos').value),
                 volumen: parseFloat(document.getElementById('volumen').value),
                 precio_venta: parseFloat(document.getElementById('precio_venta').value)
@@ -494,9 +412,7 @@
 
             const pConvertido = {
                 ...pInput,
-                precio_material: pInput.precio_material * curr.rate,
-                tarifa_mod: pInput.tarifa_mod * curr.rate,
-                cif_variable: pInput.cif_variable * curr.rate,
+                costo_variable_unitario: pInput.costo_variable_unitario * curr.rate,
                 costos_fijos: pInput.costos_fijos * curr.rate,
                 precio_venta: pInput.precio_venta * curr.rate
             };
@@ -507,19 +423,23 @@
             document.getElementById('res_utilidad').textContent = `${curr.symbol}${resBase.utilidad.toFixed(2)}`;
             document.getElementById('res_pe').textContent = `${resBase.puntoEquilibrio} un.`;
 
-            // --- GRÁFICA 1: PUNTO DE EQUILIBRIO ---
+            // --- GRÁFICA 1: PUNTO DE EQUILIBRIO (Estructura idéntica al Excel) ---
             const pe = resBase.puntoEquilibrio;
-            const maxVol = Math.max(pConvertido.volumen, pe * 1.5, 10);
+            const maxVol = Math.max(pConvertido.volumen, pe * 1.4, 70);
             
-            const numPuntos = 8;
-            let puntosX = [];
-            for (let i = 0; i <= numPuntos; i++) {
-                puntosX.push(Math.round((maxVol / numPuntos) * i));
-            }
+            // Generación de puntos X profesionales inspirados en la estructura del Excel (0, 10, 20, PE, puntos superiores)
+            let puntosX = [0, 10, 20];
             if (pe > 0 && !puntosX.includes(pe)) {
                 puntosX.push(pe);
-                puntosX.sort((a, b) => a - b);
             }
+            // Agregar puntos adicionales superiores para ver la curva de ganancias
+            let paso = Math.max(10, Math.round(maxVol / 6 / 5) * 5);
+            for (let v = paso; v <= maxVol + paso; v += paso) {
+                if (!puntosX.includes(v)) {
+                    puntosX.push(v);
+                }
+            }
+            puntosX.sort((a, b) => a - b);
             
             const fixedCostsData = puntosX.map(() => pConvertido.costos_fijos);
             const variableCostsData = puntosX.map(x => resBase.costoVariableUnitario * x);
@@ -558,8 +478,8 @@
 
             // --- GRÁFICA 2: SENSIBILIDAD ---
             const r1 = resBase;
-            const r2 = calcularModelo({...pConvertido, precio_material: pConvertido.precio_material * 1.12});
-            const r3 = calcularModelo({...pConvertido, desperdicio: 9.0});
+            const r2 = calcularModelo({...pConvertido, costo_variable_unitario: pConvertido.costo_variable_unitario * 1.12});
+            const r3 = calcularModelo({...pConvertido, costos_fijos: pConvertido.costos_fijos * 1.10});
             const r4 = calcularModelo({...pConvertido, precio_venta: pConvertido.precio_venta * 0.85});
 
             const ctx2 = document.getElementById('scenarioChart').getContext('2d');
@@ -568,7 +488,7 @@
             scenarioChartInstance = new Chart(ctx2, {
                 type: 'bar',
                 data: {
-                    labels: ["Base", "MP +12%", "Desp. 9%", "Precio -15%"],
+                    labels: ["Base", "Costo Var +12%", "Costos Fijos +10%", "Precio -15%"],
                     datasets: [
                         { label: `Utilidad Total (${curr.symbol})`, data: [r1.utilidad, r2.utilidad, r3.utilidad, r4.utilidad], backgroundColor: 'rgba(54, 162, 235, 0.6)', yAxisID: 'y' },
                         { label: `Costo Unitario (${curr.symbol})`, data: [r1.costoUnitario, r2.costoUnitario, r3.costoUnitario, r4.costoUnitario], backgroundColor: 'rgba(255, 99, 132, 0.6)', yAxisID: 'y1' }
@@ -585,7 +505,7 @@
             });
 
             // TABLA PRIORIZACIÓN
-            const variablesAProbar = ['precio_venta', 'precio_material', 'volumen', 'desperdicio', 'horas_mod', 'costos_fijos'];
+            const variablesAProbar = ['precio_venta', 'costo_variable_unitario', 'volumen', 'costos_fijos'];
             let impactos = [];
             variablesAProbar.forEach(varName => {
                 let pMod = {...pConvertido};
@@ -604,8 +524,8 @@
             // TABLA ESCENARIOS
             let escenarios = [
                 { nombre: "Base Actual", params: pConvertido },
-                { nombre: "Reducción Desperdicio (2%)", params: {...pConvertido, desperdicio: 2.0} },
-                { nombre: "Optimización MP (-5%)", params: {...pConvertido, precio_material: pConvertido.precio_material * 0.95} },
+                { nombre: "Optimización Costo Var. (-5%)", params: {...pConvertido, costo_variable_unitario: pConvertido.costo_variable_unitario * 0.95} },
+                { nombre: "Reducción Costos Fijos (-10%)", params: {...pConvertido, costos_fijos: pConvertido.costos_fijos * 0.90} },
                 { nombre: "Aumento Volumen (+5%)", params: {...pConvertido, volumen: Math.round(pConvertido.volumen * 1.05)} }
             ];
 
@@ -641,8 +561,7 @@
 
             let riesgosHTML = `
                 <ul class="list-disc pl-5 space-y-1.5 text-gray-700">
-                    <li><strong>Riesgo Operativo de Desperdicio (${pConvertido.desperdicio}%):</strong> ${pConvertido.desperdicio > 5 ? 'Nivel Alto. El porcentaje de merma actual reduce directamente el margen.' : 'Nivel Bajo/Controlado.'} Se aconseja estandarizar la técnica de manufactura.</li>
-                    <li><strong>Riesgo Volatilidad Materia Prima (${pConvertido.material || 'Material Base'}):</strong> Sensibilidad relevante ante variaciones de precios de insumos en el mercado.</li>
+                    <li><strong>Riesgo de Costo Variable (${curr.symbol}${pConvertido.costo_variable_unitario.toFixed(2)} por unidad):</strong> Impacta directamente en el margen de contribución. Se recomienda controlar eficientemente los insumos.</li>
                     <li><strong>Riesgo Estructural (Costos Fijos):</strong> Representan ${curr.symbol}${pConvertido.costos_fijos.toFixed(2)}. Un descenso por debajo de ${resBase.puntoEquilibrio} unidades generará déficit financiero.</li>
                 </ul>
             `;
