@@ -203,7 +203,7 @@
                     <!-- Botón Calcular -->
                     <div class="sm:col-span-2 mt-2">
                         <button type="button" id="calcBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition duration-200 text-base cursor-pointer">
-                            Actualizar
+                            Actualizar Análisis
                         </button>
                     </div>
                 </form>
@@ -554,6 +554,12 @@
                         y: { 
                             beginAtZero: true,
                             suggestedMax: maxMonto > 0 ? maxMonto * 1.1 : 100,
+                            ticks: {
+                                maxTicksLimit: 14, // Aumenta las divisiones para mostrar valores más cercanos en el eje Y
+                                callback: function(value) {
+                                    return curr.symbol + value.toLocaleString();
+                                }
+                            },
                             title: { display: true, text: `Monto (${curr.symbol})` } 
                         }
                     }
