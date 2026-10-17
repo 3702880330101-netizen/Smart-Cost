@@ -295,23 +295,51 @@
 
         </div>
 
-        <!-- SECCIÓN INFERIOR: GRÁFICAS LADO A LADO -->
+        <!-- SECCIÓN INFERIOR: GRÁFICAS LADO A LADO CON EXPLICACIONES -->
         <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- GRÁFICA 1: PUNTO DE EQUILIBRIO (LÍNEAS) -->
-            <div class="bg-white p-4 rounded-xl shadow-sm border">
-                <h3 class="text-xs font-bold text-gray-700 mb-2 text-center">📈 Gráfica de Punto de Equilibrio</h3>
-                <div class="relative w-full h-64">
-                    <canvas id="breakEvenChart"></canvas>
+            
+            <!-- GRÁFICA 1: PUNTO DE EQUILIBRIO -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border flex flex-col justify-between">
+                <div>
+                    <h3 class="text-xs font-bold text-gray-700 mb-2 text-center">📈 Gráfica de Punto de Equilibrio</h3>
+                    <div class="relative w-full h-60">
+                        <canvas id="breakEvenChart"></canvas>
+                    </div>
+                </div>
+                <!-- Explicación de datos -->
+                <div class="mt-3 p-2.5 bg-blue-50 rounded border border-blue-100 text-[11px] text-gray-700 space-y-1">
+                    <p class="font-bold text-blue-900">📖 Explicación de Datos:</p>
+                    <p>Muestra cómo interactúan los costos e ingresos a distintos volúmenes de unidades:</p>
+                    <ul class="list-disc pl-4 space-y-0.5 text-gray-600">
+                        <li><strong>Costos Fijos (Azul):</strong> Gastos operativos estables que no cambian con el volumen.</li>
+                        <li><strong>Costos Variables (Naranja):</strong> Incrementan proporcionalmente según las unidades fabricadas.</li>
+                        <li><strong>Costos Totales (Celeste):</strong> La suma de los costos fijos y variables.</li>
+                        <li><strong>Ingresos por Ventas (Amarillo):</strong> Dinero total recaudado. El cruce con Costos Totales determina el <strong>Punto de Equilibrio</strong>.</li>
+                    </ul>
                 </div>
             </div>
 
-            <!-- GRÁFICA 2: SENSIBILIDAD (BARRAS) -->
-            <div class="bg-white p-4 rounded-xl shadow-sm border">
-                <h3 class="text-xs font-bold text-gray-700 mb-2 text-center">📊 Comparativa de Escenarios de Sensibilidad</h3>
-                <div class="relative w-full h-64">
-                    <canvas id="scenarioChart"></canvas>
+            <!-- GRÁFICA 2: SENSIBILIDAD -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border flex flex-col justify-between">
+                <div>
+                    <h3 class="text-xs font-bold text-gray-700 mb-2 text-center">📊 Comparativa de Escenarios de Sensibilidad</h3>
+                    <div class="relative w-full h-60">
+                        <canvas id="scenarioChart"></canvas>
+                    </div>
+                </div>
+                <!-- Explicación de datos -->
+                <div class="mt-3 p-2.5 bg-orange-50 rounded border border-orange-100 text-[11px] text-gray-700 space-y-1">
+                    <p class="font-bold text-orange-900">📖 Explicación de Datos:</p>
+                    <p>Compara el comportamiento financiero bajo cuatro escenarios de estrés o mejora:</p>
+                    <ul class="list-disc pl-4 space-y-0.5 text-gray-600">
+                        <li><strong>Escenario Base:</strong> Resultados con los parámetros actuales ingresados.</li>
+                        <li><strong>Incremento de Materia Prima (+12%) o Desperdicio (9%):</strong> Simula el impacto de costos adversos.</li>
+                        <li><strong>Reducción de Precio (-15%):</strong> Evalúa la competitividad ante ajustes de mercado.</li>
+                        <li><strong>Utilidad Total (Barras Azules - Eje Izq.) vs Costo Unitario (Barras Rosas - Eje Der.).</strong></li>
+                    </ul>
                 </div>
             </div>
+
         </div>
 
     </div>
