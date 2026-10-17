@@ -1,355 +1,658 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Sistema de Costos e Inteligencia Gerencial</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #0f172a;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      color: #334155;
-    }
-    .slide-container {
-      width: 1280px;
-      height: 720px;
-      margin: 0 auto;
-      overflow: hidden;
-      box-sizing: border-box;
-      position: relative;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelo de Costos Industriales y Análisis Gerencial</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- LIBRERÍA DE GRÁFICAS (Chart.js) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
+<body class="bg-gray-50 min-h-screen py-6 px-4">
 
-  <!-- SLIDE 1: PORTADA -->
-  <div class="slide-container" id="slide1" style="background:#0f172a; display:flex; flex-direction:column; justify-content:center; padding:64px 80px;">
-    <div style="display:flex; align-items:center; gap:12px; margin-bottom:24px;">
-      <span style="background:rgba(99,102,241,0.15); color:#818cf8; border:1px solid rgba(99,102,241,0.3); font-size:14px; font-weight:700; padding:6px 16px; border-radius:20px; text-transform:uppercase; letter-spacing:1px;" contenteditable="true">Finanzas e Inteligencia Artificial</span>
-      <span style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3); font-size:14px; font-weight:700; padding:6px 16px; border-radius:20px;" contenteditable="true">Multimoneda: GTQ / USD / EUR</span>
+    <!-- MODAL PARA LA CLAVE API DE GEMINI -->
+    <div id="apiModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 text-center">
+            <div class="mb-4">
+                <span class="text-3xl">🤖</span>
+                <h2 class="text-xl font-bold text-gray-800 mt-2">Configuración de IA (Gemini)</h2>
+                <p class="text-xs text-gray-500 mt-1">Ingresa tu Clave de API de Google AI para habilitar el asistente de consultas gerenciales en tiempo real.</p>
+            </div>
+            <input type="password" id="apiKeyInput" placeholder="Pega tu clave de API aquí..." class="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm mb-4">
+            <button type="button" id="saveApiKeyBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md shadow transition duration-200">
+                Iniciar Sistema
+            </button>
+            <p id="apiKeyError" class="text-xs text-red-500 mt-2 hidden">Por favor ingresa una clave válida.</p>
+        </div>
     </div>
-    
-    <h1 contenteditable="true" style="font-family:'Space Grotesk', sans-serif; font-size:52px; font-weight:700; color:#f8fafc; line-height:1.15; max-width:900px; margin-bottom:20px;">
-      Sistema de Costos Industriales, Viabilidad y Gestión de Riesgos con IA
-    </h1>
-    
-    <p contenteditable="true" style="font-size:20px; color:#94a3b8; max-width:780px; line-height:1.6; margin-bottom:40px;">
-      Unificación de modelos financieros dinámicos, evaluación de viabilidad del producto, matriz de riesgos operativos y reportes gerenciales en tiempo real con Gemini.
-    </p>
 
-    <div style="display:flex; gap:32px; border-top:1px solid #1e293b; padding-top:28px;">
-      <div>
-        <p style="font-size:14px; color:#64748b; text-transform:uppercase; font-weight:600;" contenteditable="true">Módulo Principal</p>
-        <p style="font-size:16px; color:#e2e8f0; font-weight:600;" contenteditable="true">Punto de Equilibrio y Sensibilidad</p>
-      </div>
-      <div style="width:1px; background:#1e293b;"></div>
-      <div>
-        <p style="font-size:14px; color:#64748b; text-transform:uppercase; font-weight:600;" contenteditable="true">Motor de Riesgos</p>
-        <p style="font-size:16px; color:#38bdf8; font-weight:600;" contenteditable="true">Análisis Proactivo de Viabilidad</p>
-      </div>
-      <div style="width:1px; background:#1e293b;"></div>
-      <div>
-        <p style="font-size:14px; color:#64748b; text-transform:uppercase; font-weight:600;" contenteditable="true">Conversión Dinámica</p>
-        <p style="font-size:16px; color:#34d399; font-weight:600;" contenteditable="true">Quetzales, Dólares y Euros</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- SLIDE 2: ARQUITECTURA GENERAL -->
-  <div class="slide-container" id="slide2" style="background:#f8fafc; padding:56px 64px; display:flex; flex-direction:column;">
-    <p contenteditable="true" style="font-size:14px; font-weight:700; color:#4f46e5; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Arquitectura del Sistema</p>
-    <h2 contenteditable="true" style="font-size:32px; font-weight:800; color:#0f172a; margin-bottom:36px;">Visión General del Ecosistema Integrado</h2>
-
-    <div style="display:flex; gap:24px; flex-grow:1; align-items:center;">
-      <div style="background:#ffffff; border-radius:16px; padding:28px; flex:1 1 0; box-shadow:0 4px 20px rgba(0,0,0,0.04); border:1px solid #e2e8f0;">
-        <div style="width:48px; height:48px; background:#e0e7ff; border-radius:12px; display:flex; align-items:center; justify-content:center; margin-bottom:20px; color:#4f46e5;">
-          <i class="fa-solid fa-calculator" style="font-size:22px;"></i>
+    <!-- CONTENEDOR PRINCIPAL -->
+    <div class="max-w-7xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6 md:p-8">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800 text-center md:text-left flex-1">Modelo de Costos Industriales y IA Gerencial</h1>
+            
+            <!-- SELECTOR DE MONEDA -->
+            <div class="flex items-center gap-2 bg-indigo-50 p-2 rounded-lg border border-indigo-200">
+                <label for="currencySelect" class="text-xs font-bold text-indigo-900">Moneda:</label>
+                <select id="currencySelect" class="text-xs bg-white border border-indigo-300 rounded p-1.5 font-semibold text-gray-700 focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="GTQ" data-symbol="Q" data-rate="1.0">Quetzal (GTQ - Q)</option>
+                    <option value="USD" data-symbol="$" data-rate="0.13">Dólar (USD - $)</option>
+                    <option value="EUR" data-symbol="€" data-rate="0.12">Euro (EUR - €)</option>
+                    <option value="MXN" data-symbol="$" data-rate="2.55">Peso Mex (MXN - $)</option>
+                    <option value="COP" data-symbol="$" data-rate="550.0">Peso Col (COP - $)</option>
+                </select>
+                <button type="button" id="changeKeyBtn" class="text-xs text-indigo-600 hover:underline ml-2">Cambiar API Key</button>
+            </div>
         </div>
-        <h3 contenteditable="true" style="font-size:20px; font-weight:700; color:#0f172a; margin-bottom:12px;">Motor Financiero</h3>
-        <p contenteditable="true" style="font-size:15px; color:#64748b; line-height:1.5;">Cálculo automático de costos variables, fijos y punto de equilibrio por unidad de producción.</p>
-      </div>
+        <p class="text-xs md:text-sm text-gray-500 mb-6 text-center">Ingresa los parámetros a la izquierda para visualizar el impacto en tiempo real en las gráficas, tablas y reportes de la derecha.</p>
+        
+        <!-- LAYOUT DE 2 COLUMNAS EN PARALELO -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            <!-- COLUMNA IZQUIERDA: FORMULARIO DE PARÁMETROS -->
+            <div class="lg:col-span-5 bg-gray-50 p-5 rounded-xl border">
+                <h2 class="text-lg font-bold text-gray-800 mb-4">Parámetros de Entrada</h2>
+                
+                <form id="costForm" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    
+                    <!-- Material -->
+                    <div class="sm:col-span-2">
+                        <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
+                            <span>Material (Descripción)</span>
+                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
+                                ℹ️
+                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
+                                    Nombre o tipo de materia prima principal utilizada (Ej. Aluminio, Acero).
+                                </span>
+                            </span>
+                        </label>
+                        <input type="text" id="material" name="material" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                    </div>
 
-      <div style="background:#ffffff; border-radius:16px; padding:28px; flex:1 1 0; box-shadow:0 4px 20px rgba(0,0,0,0.04); border:1px solid #e2e8f0;">
-        <div style="width:48px; height:48px; background:#dcfce7; border-radius:12px; display:flex; align-items:center; justify-content:center; margin-bottom:20px; color:#16a34a;">
-          <i class="fa-solid fa-coins" style="font-size:22px;"></i>
+                    <!-- Consumo estándar -->
+                    <div>
+                        <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
+                            <span>Consumo estándar</span>
+                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
+                                ℹ️
+                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
+                                    Cantidad neta de material requerida para fabricar una unidad de producto.
+                                </span>
+                            </span>
+                        </label>
+                        <input type="number" step="0.01" id="consumo_estandar" name="consumo_estandar" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                    </div>
+
+                    <!-- Precio material -->
+                    <div>
+                        <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
+                            <span>Precio material (<span class="currencySymbol">Q</span>)</span>
+                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
+                                ℹ️
+                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
+                                    Costo unitario de adquisición de la materia prima por cada unidad de medida.
+                                </span>
+                            </span>
+                        </label>
+                        <input type="number" step="0.01" id="precio_material" name="precio_material" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                    </div>
+
+                    <!-- Desperdicio -->
+                    <div>
+                        <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
+                            <span>Desperdicio (%)</span>
+                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
+                                ℹ️
+                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
+                                    Porcentaje estimado de material que se desecha o se pierde durante el proceso de producción.
+                                </span>
+                            </span>
+                        </label>
+                        <input type="number" step="0.1" id="desperdicio" name="desperdicio" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                    </div>
+
+                    <!-- Horas MOD -->
+                    <div>
+                        <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
+                            <span>Horas MOD</span>
+                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
+                                ℹ️
+                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
+                                    Horas de Mano de Obra Directa invertidas en la fabricación de una unidad.
+                                </span>
+                            </span>
+                        </label>
+                        <input type="number" step="0.1" id="horas_mod" name="horas_mod" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                    </div>
+
+                    <!-- Tarifa MOD -->
+                    <div>
+                        <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
+                            <span>Tarifa MOD (<span class="currencySymbol">Q</span>/h)</span>
+                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
+                                ℹ️
+                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
+                                    Costo por hora pagado al personal de producción directo.
+                                </span>
+                            </span>
+                        </label>
+                        <input type="number" step="0.01" id="tarifa_mod" name="tarifa_mod" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                    </div>
+
+                    <!-- CIF variable -->
+                    <div>
+                        <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
+                            <span>CIF variable (<span class="currencySymbol">Q</span>)</span>
+                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
+                                ℹ️
+                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
+                                    Costos Indirectos de Fabricación que varían según el volumen de producción unitario.
+                                </span>
+                            </span>
+                        </label>
+                        <input type="number" step="0.01" id="cif_variable" name="cif_variable" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                    </div>
+
+                    <!-- Costos fijos -->
+                    <div>
+                        <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
+                            <span>Costos fijos (<span class="currencySymbol">Q</span>)</span>
+                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
+                                ℹ️
+                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
+                                    Gastos operativos totales que no cambian sin importar cuántas unidades se produzcan.
+                                </span>
+                            </span>
+                        </label>
+                        <input type="number" step="0.01" id="costos_fijos" name="costos_fijos" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                    </div>
+
+                    <!-- Volumen -->
+                    <div>
+                        <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
+                            <span>Volumen / Unidades</span>
+                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
+                                ℹ️
+                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
+                                    Cantidad total de unidades que se planea fabricar y vender en el período.
+                                </span>
+                            </span>
+                        </label>
+                        <input type="number" id="volumen" name="volumen" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                    </div>
+
+                    <!-- Precio venta -->
+                    <div class="sm:col-span-2">
+                        <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
+                            <span>Precio de venta unitario (<span class="currencySymbol">Q</span>)</span>
+                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
+                                ℹ️
+                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
+                                    Precio monetario al cual se comercializa cada unidad terminada en el mercado.
+                                </span>
+                            </span>
+                        </label>
+                        <input type="number" step="0.01" id="precio_venta" name="precio_venta" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                    </div>
+
+                    <!-- Alerta -->
+                    <div id="alertContainer" class="sm:col-span-2 hidden bg-red-100 border border-red-400 text-red-700 px-3 py-2 rounded text-xs" role="alert">
+                        <span id="alertMessage" class="block font-medium"></span>
+                    </div>
+
+                    <!-- Botón Calcular -->
+                    <div class="sm:col-span-2 mt-2">
+                        <button type="button" id="calcBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-4 rounded-md shadow transition duration-200 text-sm cursor-pointer">
+                            Actualizar Análisis
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- COLUMNA DERECHA: RESULTADOS, GRÁFICAS, TABLAS Y REPORTES -->
+            <div class="lg:col-span-7 bg-gray-50 p-5 rounded-xl border space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-2">
+                    <h2 class="text-lg font-bold text-gray-800">Análisis y Resultados</h2>
+                    <button type="button" onclick="window.print()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1.5 px-3 rounded-md shadow transition duration-200 text-xs flex items-center gap-1.5">
+                        📄 Descargar PDF
+                    </button>
+                </div>
+
+                <!-- Tarjetas de Métricas -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center">
+                    <div class="bg-white p-3 rounded-lg shadow-sm border">
+                        <p class="text-[11px] text-gray-500 uppercase font-semibold">Costo Unitario</p>
+                        <p id="res_costo_unit" class="text-base font-bold text-indigo-600 mt-0.5">Q0.00</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg shadow-sm border">
+                        <p class="text-[11px] text-gray-500 uppercase font-semibold">Utilidad Total</p>
+                        <p id="res_utilidad" class="text-base font-bold text-green-600 mt-0.5">Q0.00</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg shadow-sm border">
+                        <p class="text-[11px] text-gray-500 uppercase font-semibold">Punto de Equilibrio</p>
+                        <p id="res_pe" class="text-base font-bold text-blue-600 mt-0.5">0 un.</p>
+                    </div>
+                </div>
+
+                <!-- GRÁFICA 1: PUNTO DE EQUILIBRIO (LÍNEAS) -->
+                <div class="bg-white p-3 rounded-lg shadow-sm border">
+                    <h3 class="text-xs font-bold text-gray-700 mb-2 text-center">📈 Gráfica de Punto de Equilibrio</h3>
+                    <div class="relative w-full h-64">
+                        <canvas id="breakEvenChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- GRÁFICA 2: SENSIBILIDAD (BARRAS) -->
+                <div class="bg-white p-3 rounded-lg shadow-sm border">
+                    <h3 class="text-xs font-bold text-gray-700 mb-2 text-center">📊 Comparativa de Escenarios de Sensibilidad</h3>
+                    <div class="relative w-full h-44">
+                        <canvas id="scenarioChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- TABLAS DE ANÁLISIS -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div class="bg-white p-3 rounded-lg shadow-sm border">
+                        <h3 class="text-[11px] font-bold text-gray-700 uppercase mb-2">Prioridad (Impacto +10%)</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full text-xs text-left text-gray-500">
+                                <thead class="text-[10px] text-gray-700 uppercase bg-gray-100">
+                                    <tr>
+                                        <th class="py-1 px-2">Variable</th>
+                                        <th class="py-1 px-2">Impacto (<span class="currencySymbol">Q</span>)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="prioritizationTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-3 rounded-lg shadow-sm border">
+                        <h3 class="text-[11px] font-bold text-gray-700 uppercase mb-2">Escenarios de Mejora</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full text-xs text-left text-gray-500">
+                                <thead class="text-[10px] text-gray-700 uppercase bg-gray-100">
+                                    <tr>
+                                        <th class="py-1 px-2">Escenario</th>
+                                        <th class="py-1 px-2">Utilidad (<span class="currencySymbol">Q</span>)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="scenariosTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- REPORTE GERENCIAL ESCRITO -->
+                <div class="bg-white p-4 rounded-lg shadow-sm border space-y-3">
+                    <h3 class="text-xs font-bold text-gray-800 uppercase border-b pb-1">Reporte Gerencial, Viabilidad y Evaluación de Riesgos</h3>
+                    <div id="gerencialReport" class="text-xs text-gray-600 space-y-2"></div>
+                </div>
+
+                <!-- CONSULTA INTERACTIVA CON IA (GEMINI) -->
+                <div class="bg-white p-4 rounded-lg shadow-sm border space-y-3">
+                    <h3 class="text-xs font-bold text-gray-800">🤖 Consultas Gerenciales con IA (Gemini)</h3>
+                    <p class="text-[11px] text-gray-500">Pregúntale a la IA sobre materiales, costos, riesgos o escenarios hipotéticos:</p>
+                    
+                    <div class="flex gap-2">
+                        <input type="text" id="aiPrompt" placeholder="Ej. ¿Qué riesgos adicionales implica el uso de este material en producción?" class="flex-1 text-xs border rounded-md p-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <button type="button" id="askAiBtn" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-md text-xs transition duration-200">
+                            Preguntar a la IA
+                        </button>
+                    </div>
+
+                    <div id="aiResponseContainer" class="hidden mt-2 p-3 bg-indigo-50 rounded-md border border-indigo-100 text-xs text-gray-700 space-y-1">
+                        <p class="font-bold text-indigo-900">Respuesta de la IA:</p>
+                        <div id="aiResponseText" class="whitespace-pre-line"></div>
+                    </div>
+                </div>
+
+            </div>
+
         </div>
-        <h3 contenteditable="true" style="font-size:20px; font-weight:700; color:#0f172a; margin-bottom:12px;">Módulo Multimoneda</h3>
-        <p contenteditable="true" style="font-size:15px; color:#64748b; line-height:1.5;">Conversión instantánea entre GTQ, USD y EUR aplicando tipos de cambio del mercado actual.</p>
-      </div>
-
-      <div style="background:#ffffff; border-radius:16px; padding:28px; flex:1 1 0; box-shadow:0 4px 20px rgba(0,0,0,0.04); border:1px solid #e2e8f0;">
-        <div style="width:48px; height:48px; background:#fef3c7; border-radius:12px; display:flex; align-items:center; justify-content:center; margin-bottom:20px; color:#d97706;">
-          <i class="fa-solid fa-triangle-exclamation" style="font-size:22px;"></i>
-        </div>
-        <h3 contenteditable="true" style="font-size:20px; font-weight:700; color:#0f172a; margin-bottom:12px;">Evaluación de Riesgos</h3>
-        <p contenteditable="true" style="font-size:15px; color:#64748b; line-height:1.5;">Matriz de impacto operativo y financiero para medir la viabilidad comercial del producto.</p>
-      </div>
-
-      <div style="background:#ffffff; border-radius:16px; padding:28px; flex:1 1 0; box-shadow:0 4px 20px rgba(0,0,0,0.04); border:1px solid #e2e8f0;">
-        <div style="width:48px; height:48px; background:#f3e8ff; border-radius:12px; display:flex; align-items:center; justify-content:center; margin-bottom:20px; color:#9333ea;">
-          <i class="fa-solid fa-brain" style="font-size:22px;"></i>
-        </div>
-        <h3 contenteditable="true" style="font-size:20px; font-weight:700; color:#0f172a; margin-bottom:12px;">Reporte IA Avanzado</h3>
-        <p contenteditable="true" style="font-size:15px; color:#64748b; line-height:1.5;">Diagnóstico ejecutivo sintetizado por Gemini con dictamen directo de viabilidad estratégica.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- SLIDE 3: MATRIZ DE RIESGOS -->
-  <div class="slide-container" id="slide3" style="background:#ffffff; padding:56px 64px; display:flex; flex-direction:column;">
-    <p contenteditable="true" style="font-size:14px; font-weight:700; color:#ef4444; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Gestión de Riesgos Industriales</p>
-    <h2 contenteditable="true" style="font-size:32px; font-weight:800; color:#0f172a; margin-bottom:28px;">Matriz de Impacto y Mitigación del Producto</h2>
-
-    <div style="flex-grow:1; display:flex; flex-direction:column; justify-content:center;">
-      <table style="width:100%; border-collapse:collapse; background:#f8fafc; border-radius:12px; overflow:hidden; border:1px solid #e2e8f0;">
-        <thead>
-          <tr style="background:#0f172a; color:#ffffff; text-align:left; font-size:15px;">
-            <th style="padding:16px 20px;" contenteditable="true">Categoría de Riesgo</th>
-            <th style="padding:16px 20px;" contenteditable="true">Factor de Riesgo Identificado</th>
-            <th style="padding:16px 20px;" contenteditable="true">Impacto Financiero</th>
-            <th style="padding:16px 20px;" contenteditable="true">Estrategia de Mitigación</th>
-          </tr>
-        </thead>
-        <tbody style="font-size:15px; color:#334155;">
-          <tr style="border-bottom:1px solid #e2e8f0;">
-            <td style="padding:16px 20px; font-weight:700; color:#dc2626;" contenteditable="true"><i class="fa-solid fa-arrow-trend-up" style="margin-right:8px;"></i>Materia Prima</td>
-            <td style="padding:16px 20px;" contenteditable="true">Volatilidad de precios e insumos importados.</td>
-            <td style="padding:16px 20px; font-weight:600;" contenteditable="true">Incremento del 15% en costo variable.</td>
-            <td style="padding:16px 20px;" contenteditable="true">Contratos de suministro con precio fijo trimestral.</td>
-          </tr>
-          <tr style="border-bottom:1px solid #e2e8f0; background:#ffffff;">
-            <td style="padding:16px 20px; font-weight:700; color:#d97706;" contenteditable="true"><i class="fa-solid fa-dumpster" style="margin-right:8px;"></i>Operativo</td>
-            <td style="padding:16px 20px;" contenteditable="true">Merma de material por encima del margen técnico.</td>
-            <td style="padding:16px 20px; font-weight:600;" contenteditable="true">Reducción del 8% en margen de contribución.</td>
-            <td style="padding:16px 20px;" contenteditable="true">Calibración automatizada e incentivos de eficiencia.</td>
-          </tr>
-          <tr style="border-bottom:1px solid #e2e8f0;">
-            <td style="padding:16px 20px; font-weight:700; color:#0284c7;" contenteditable="true"><i class="fa-solid fa-coins" style="margin-right:8px;"></i>Cambiario</td>
-            <td style="padding:16px 20px;" contenteditable="true">Fluctuación en tipo de cambio USD/GTQ o EUR/GTQ.</td>
-            <td style="padding:16px 20px; font-weight:600;" contenteditable="true">Variabilidad en costo de liquidación de insumos.</td>
-            <td style="padding:16px 20px;" contenteditable="true">Módulo dinámico multimoneda para coberturas.</td>
-          </tr>
-          <tr style="background:#ffffff;">
-            <td style="padding:16px 20px; font-weight:700; color:#7c3aed;" contenteditable="true"><i class="fa-solid fa-chart-line-down" style="margin-right:8px;"></i>Comercial</td>
-            <td style="padding:16px 20px;" contenteditable="true">Ventas reales por debajo del punto de equilibrio.</td>
-            <td style="padding:16px 20px; font-weight:600;" contenteditable="true">Pérdida operativa directa por no cubrir costos fijos.</td>
-            <td style="padding:16px 20px;" contenteditable="true">Monitoreo semanal del margen de seguridad.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- SLIDE 4: EVALUACIÓN DE VIABILIDAD DEL PRODUCTO -->
-  <div class="slide-container" id="slide4" style="background:#f8fafc; padding:56px 64px; display:flex; flex-direction:column;">
-    <p contenteditable="true" style="font-size:14px; font-weight:700; color:#059669; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Análisis Estratégico</p>
-    <h2 contenteditable="true" style="font-size:32px; font-weight:800; color:#0f172a; margin-bottom:32px;">Criterios de Viabilidad Económica del Producto</h2>
-
-    <div style="display:flex; gap:32px; flex-grow:1; align-items:center;">
-      <div style="background:#ffffff; border-radius:16px; padding:32px; flex:1 1 0; border:1px solid #e2e8f0; height:100%; display:flex; flex-direction:column; justify-content:center;">
-        <span style="font-size:14px; font-weight:700; color:#2563eb; background:#eff6ff; padding:4px 12px; border-radius:12px; width:fit-content; margin-bottom:16px;" contenteditable="true">Criterio 1: Margen de Contribución</span>
-        <h3 contenteditable="true" style="font-size:24px; font-weight:700; color:#0f172a; margin-bottom:12px;">Salud del Precio vs Costo</h3>
-        <p contenteditable="true" style="font-size:16px; color:#475569; line-height:1.6;">
-          El producto es <b>viable</b> únicamente cuando el precio unitario supera los costos variables incrementales y deja suficiente margen para absorción de costos fijos.
-        </p>
-      </div>
-
-      <div style="background:#ffffff; border-radius:16px; padding:32px; flex:1 1 0; border:1px solid #e2e8f0; height:100%; display:flex; flex-direction:column; justify-content:center;">
-        <span style="font-size:14px; font-weight:700; color:#059669; background:#ecfdf5; padding:4px 12px; border-radius:12px; width:fit-content; margin-bottom:16px;" contenteditable="true">Criterio 2: Volumen Mínimo</span>
-        <h3 contenteditable="true" style="font-size:24px; font-weight:700; color:#0f172a; margin-bottom:12px;">Factibilidad de Ventas</h3>
-        <p contenteditable="true" style="font-size:16px; color:#475569; line-height:1.6;">
-          Se compara el punto de equilibrio calculated en el sistema contra la capacidad instalada de planta y la demanda proyectada del mercado objetivo.
-        </p>
-      </div>
-
-      <div style="background:#ffffff; border-radius:16px; padding:32px; flex:1 1 0; border:1px solid #e2e8f0; height:100%; display:flex; flex-direction:column; justify-content:center;">
-        <span style="font-size:14px; font-weight:700; color:#7c3aed; background:#f5f3ff; padding:4px 12px; border-radius:12px; width:fit-content; margin-bottom:16px;" contenteditable="true">Criterio 3: Sensibilidad</span>
-        <h3 contenteditable="true" style="font-size:24px; font-weight:700; color:#0f172a; margin-bottom:12px;">Tolerancia a Desviaciones</h3>
-        <p contenteditable="true" style="font-size:16px; color:#475569; line-height:1.6;">
-          Evaluación del impacto de un incremento del +10% en materia prima o mano de obra sin comprometer la rentabilidad operativa mínima requerida.
-        </p>
-      </div>
-    </div>
-  </div>
-
-  <!-- SLIDE 5: VIABILIDAD TÉCNICA, FINANCIERA Y OPERATIVA -->
-  <div class="slide-container" id="slide5" style="background:#ffffff; display:flex; flex-direction:column; padding:48px 64px;">
-    <h2 class="slide-title" contenteditable="true" style="font-size:32px; font-weight:700; color:#1e293b; margin:0 0 8px 0; line-height:1.2;">
-      Viabilidad del Producto en Reportes Gerenciales
-    </h2>
-    <p contenteditable="true" style="font-size:16px; color:#64748b; margin:0 0 32px 0;">
-      Evaluación técnica, operativa y financiera para la adopción estratégica.
-    </p>
-
-    <div style="display:flex; gap:24px; width:100%; flex-grow:1; align-items:center;">
-      <div style="background:#f8fafc; border-radius:12px; padding:28px; flex:1 1 0; border-top:4px solid #0284c7;">
-        <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
-          <i class="fa-solid fa-gears" style="font-size:24px; color:#0284c7;"></i>
-          <h3 contenteditable="true" style="margin:0; font-size:20px; color:#0f172a;">Viabilidad Técnica</h3>
-        </div>
-        <p contenteditable="true" style="margin:0; font-size:16px; color:#334155; line-height:1.5;">
-          Integración fluida con ERPs existentes y procesamiento en tiempo real sin requerir infraestructura adicional.
-        </p>
-      </div>
-
-      <div style="background:#f8fafc; border-radius:12px; padding:28px; flex:1 1 0; border-top:4px solid #0d9488;">
-        <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
-          <i class="fa-solid fa-chart-line" style="font-size:24px; color:#0d9488;"></i>
-          <h3 contenteditable="true" style="margin:0; font-size:20px; color:#0f172a;">Viabilidad Financiera</h3>
-        </div>
-        <p contenteditable="true" style="margin:0; font-size:16px; color:#334155; line-height:1.5;">
-          Retorno de inversión estimado a 6 meses mediante la reducción de errores en asignación de costos y tiempos de cierre.
-        </p>
-      </div>
-
-      <div style="background:#f8fafc; border-radius:12px; padding:28px; flex:1 1 0; border-top:4px solid #6366f1;">
-        <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
-          <i class="fa-solid fa-user-check" style="font-size:24px; color:#6366f1;"></i>
-          <h3 contenteditable="true" style="margin:0; font-size:20px; color:#0f172a;">Viabilidad Operativa</h3>
-        </div>
-        <p contenteditable="true" style="margin:0; font-size:16px; color:#334155; line-height:1.5;">
-          Curva de aprendizaje acelerada para directivos mediante dashboards e interfaces de análisis intuitivos.
-        </p>
-      </div>
-    </div>
-  </div>
-
-  <!-- SLIDE 6: EVALUACIÓN DE RIESGOS ESPECÍFICOS -->
-  <div class="slide-container" id="slide6" style="background:#ffffff; display:flex; flex-direction:column; padding:48px 64px;">
-    <h2 class="slide-title" contenteditable="true" style="font-size:32px; font-weight:700; color:#1e293b; margin:0 0 8px 0; line-height:1.2;">
-      Evaluación de Riesgos al Utilizar el Producto
-    </h2>
-    <p contenteditable="true" style="font-size:16px; color:#64748b; margin:0 0 32px 0;">
-      Identificación y estrategia de mitigación en reportes de inteligencia gerencial.
-    </p>
-
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; width:100%; flex-grow:1; align-items:center;">
-      <div style="background:#fff1f2; border-radius:12px; padding:24px; border-left:4px solid #e11d48;">
-        <h3 contenteditable="true" style="margin:0 0 8px 0; font-size:18px; color:#9f1239;">Riesgo de Integridad de Datos</h3>
-        <p contenteditable="true" style="margin:0; font-size:15px; color:#881337;">
-          <b>Impacto:</b> Datos origen desactualizados generan sesgos en decisiones.<br>
-          <b>Mitigación:</b> Algoritmos de validación previa y auditoría de carga.
-        </p>
-      </div>
-
-      <div style="background:#fff7ed; border-radius:12px; padding:24px; border-left:4px solid #ea580c;">
-        <h3 contenteditable="true" style="margin:0 0 8px 0; font-size:18px; color:#9a3412;">Riesgo de Resistencias al Cambio</h3>
-        <p contenteditable="true" style="margin:0; font-size:15px; color:#7c2d12;">
-          <b>Impacto:</b> Poca adopción por preferencia de métodos tradicionales.<br>
-          <b>Mitigación:</b> Capacitaciones focalizadas e incentivos de uso.
-        </p>
-      </div>
-
-      <div style="background:#fefce8; border-radius:12px; padding:24px; border-left:4px solid #ca8a04;">
-        <h3 contenteditable="true" style="margin:0 0 8px 0; font-size:18px; color:#854d0e;">Riesgo de Seguridad y Accesos</h3>
-        <p contenteditable="true" style="margin:0; font-size:15px; color:#713f12;">
-          <b>Impacto:</b> Fuga de información financiera sensible.<br>
-          <b>Mitigación:</b> Roles jerárquicos y cifrado de extremo a extremo.
-        </p>
-      </div>
-
-      <div style="background:#f0fdf4; border-radius:12px; padding:24px; border-left:4px solid #16a34a;">
-        <h3 contenteditable="true" style="margin:0 0 8px 0; font-size:18px; color:#166534;">Riesgo de Volatilidad Cambiaria</h3>
-        <p contenteditable="true" style="margin:0; font-size:15px; color:#14532d;">
-          <b>Impacto:</b> Distorsión en reportes multimoneda por fluctuaciones.<br>
-          <b>Mitigación:</b> Actualización automática de tipos de cambio oficiales.
-        </p>
-      </div>
-    </div>
-  </div>
-
-  <!-- SLIDE 7: INTERACTIVO - SELECTOR Y CONVERTIDOR MULTIMONEDA -->
-  <div class="slide-container" id="slide7" style="background:#ffffff; display:flex; flex-direction:column; padding:48px 64px;">
-    <h2 class="slide-title" contenteditable="true" style="font-size:32px; font-weight:700; color:#1e293b; margin:0 0 8px 0; line-height:1.2;">
-      Convertidor Dinámico de Monedas
-    </h2>
-    <p contenteditable="true" style="font-size:16px; color:#64748b; margin:0 0 24px 0;">
-      Seleccione la divisa para recalcular automáticamente las métricas del reporte gerencial.
-    </p>
-
-    <div style="background:#f8fafc; border-radius:16px; padding:32px; display:flex; flex-direction:column; gap:24px; width:100%; max-width:900px; margin:0 auto; box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);">
-      <div style="display:flex; justify-content:space-between; align-items:center; background:#ffffff; padding:16px 24px; border-radius:12px; border:1px solid #e2e8f0;">
-        <label style="font-weight:600; font-size:18px; color:#334155;">Seleccionar Moneda de Visualización:</label>
-        <select id="currency-selector" onchange="updateCurrency()" style="padding:10px 20px; font-size:16px; border-radius:8px; border:1px solid #cbd5e1; background:#f1f5f9; color:#0f172a; font-weight:600; cursor:pointer;">
-          <option value="USD">USD - Dólar ($)</option>
-          <option value="EUR">EUR - Euro (€)</option>
-          <option value="GTQ">GTQ - Quetzal (Q)</option>
-          <option value="MXN">MXN - Peso Mex ($)</option>
-        </select>
-      </div>
-
-      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:20px;">
-        <div style="background:#ffffff; padding:20px; border-radius:12px; border:1px solid #e2e8f0; text-align:center;">
-          <p contenteditable="true" style="margin:0 0 8px 0; font-size:14px; color:#64748b; font-weight:600;">Costo Operativo</p>
-          <p id="metric-cost" style="margin:0; font-size:28px; font-weight:800; color:#0284c7;">$120,000</p>
-        </div>
-
-        <div style="background:#ffffff; padding:20px; border-radius:12px; border:1px solid #e2e8f0; text-align:center;">
-          <p contenteditable="true" style="margin:0 0 8px 0; font-size:14px; color:#64748b; font-weight:600;">Ingreso Estimado</p>
-          <p id="metric-income" style="margin:0; font-size:28px; font-weight:800; color:#16a34a;">$350,000</p>
-        </div>
-
-        <div style="background:#ffffff; padding:20px; border-radius:12px; border:1px solid #e2e8f0; text-align:center;">
-          <p contenteditable="true" style="margin:0 0 8px 0; font-size:14px; color:#64748b; font-weight:600;">Margen Neto</p>
-          <p id="metric-margin" style="margin:0; font-size:28px; font-weight:800; color:#6366f1;">$230,000</p>
-        </div>
-      </div>
     </div>
 
     <script>
-      function updateCurrency() {
-        const rates = {
-          USD: { rate: 1, symbol: '$' },
-          EUR: { rate: 0.92, symbol: '€' },
-          GTQ: { rate: 7.80, symbol: 'Q' },
-          MXN: { rate: 17.10, symbol: '$' }
-        };
-        const baseValues = { cost: 120000, income: 350000, margin: 230000 };
-        const selected = document.getElementById('currency-selector').value;
-        const currency = rates[selected];
+        let breakEvenChartInstance = null;
+        let scenarioChartInstance = null;
+        let datosUltimoCalculo = null;
 
-        document.getElementById('metric-cost').innerText = currency.symbol + (baseValues.cost * currency.rate).toLocaleString('en-US', {maximumFractionDigits: 0});
-        document.getElementById('metric-income').innerText = currency.symbol + (baseValues.income * currency.rate).toLocaleString('en-US', {maximumFractionDigits: 0});
-        document.getElementById('metric-margin').innerText = currency.symbol + (baseValues.margin * currency.rate).toLocaleString('en-US', {maximumFractionDigits: 0});
-      }
+        // GESTIÓN DE MONEDA Y TASA
+        function getCurrentCurrency() {
+            const select = document.getElementById('currencySelect');
+            const selectedOption = select.options[select.selectedIndex];
+            return {
+                code: select.value,
+                symbol: selectedOption.getAttribute('data-symbol'),
+                rate: parseFloat(selectedOption.getAttribute('data-rate'))
+            };
+        }
+
+        function updateCurrencyLabels() {
+            const currency = getCurrentCurrency();
+            document.querySelectorAll('.currencySymbol').forEach(el => {
+                el.textContent = currency.symbol;
+            });
+        }
+
+        document.getElementById('currencySelect').addEventListener('change', () => {
+            updateCurrencyLabels();
+            if (datosUltimoCalculo) {
+                ejecutarCalculo();
+            }
+        });
+
+        // GESTIÓN DEL MODAL DE API KEY
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedKey = sessionStorage.getItem('gemini_api_key');
+            if (savedKey) {
+                document.getElementById('apiModal').classList.add('hidden');
+            }
+            updateCurrencyLabels();
+        });
+
+        document.getElementById('saveApiKeyBtn').addEventListener('click', () => {
+            const key = document.getElementById('apiKeyInput').value.trim();
+            const errorElement = document.getElementById('apiKeyError');
+            if (key === "") {
+                errorElement.textContent = "Por favor ingresa una clave válida.";
+                errorElement.classList.remove('hidden');
+                return;
+            }
+            sessionStorage.setItem('gemini_api_key', key);
+            document.getElementById('apiModal').classList.add('hidden');
+        });
+
+        document.getElementById('changeKeyBtn').addEventListener('click', () => {
+            sessionStorage.removeItem('gemini_api_key');
+            document.getElementById('apiKeyInput').value = '';
+            document.getElementById('apiModal').classList.remove('hidden');
+        });
+
+        function calcularModelo(p) {
+            const materialAjustado = p.consumo_estandar * (1 + (p.desperdicio / 100));
+            const costoMpUnitario = materialAjustado * p.precio_material;
+            const costoModUnitario = p.horas_mod * p.tarifa_mod;
+            const costoVariableUnitario = costoMpUnitario + costoModUnitario + p.cif_variable;
+            const costoTotal = (costoVariableUnitario * p.volumen) + p.costos_fijos;
+            const costoUnitario = p.volumen > 0 ? costoTotal / p.volumen : 0;
+            const margenContribucionUnitario = p.precio_venta - costoVariableUnitario;
+            const puntoEquilibrio = margenContribucionUnitario > 0 ? Math.ceil(p.costos_fijos / margenContribucionUnitario) : 0;
+            const utilidad = (margenContribucionUnitario * p.volumen) - p.costos_fijos;
+
+            return { costoUnitario, utilidad, puntoEquilibrio, costoVariableUnitario, margenContribucionUnitario };
+        }
+
+        function ejecutarCalculo() {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertMessage = document.getElementById('alertMessage');
+            const curr = getCurrentCurrency();
+
+            const campos = [
+                { id: 'material', nombre: 'Material (Descripción)' },
+                { id: 'consumo_estandar', nombre: 'Consumo estándar' },
+                { id: 'precio_material', nombre: 'Precio del material' },
+                { id: 'desperdicio', nombre: 'Desperdicio (%)' },
+                { id: 'horas_mod', nombre: 'Horas MOD' },
+                { id: 'tarifa_mod', nombre: 'Tarifa MOD' },
+                { id: 'cif_variable', nombre: 'CIF variable' },
+                { id: 'costos_fijos', nombre: 'Costos fijos' },
+                { id: 'volumen', nombre: 'Volumen / Unidades producidas' },
+                { id: 'precio_venta', nombre: 'Precio de venta unitario' }
+            ];
+
+            let camposFaltantes = [];
+            campos.forEach(campo => {
+                const valor = document.getElementById(campo.id).value.trim();
+                if (valor === "") {
+                    camposFaltantes.push(campo.nombre);
+                }
+            });
+
+            if (camposFaltantes.length > 0) {
+                alertMessage.textContent = `Falta rellenar: ${camposFaltantes.join(', ')}`;
+                alertContainer.classList.remove('hidden');
+                return;
+            }
+
+            alertContainer.classList.add('hidden');
+
+            // Leemos valores ingresados
+            const pInput = {
+                material: document.getElementById('material').value,
+                consumo_estandar: parseFloat(document.getElementById('consumo_estandar').value),
+                precio_material: parseFloat(document.getElementById('precio_material').value),
+                desperdicio: parseFloat(document.getElementById('desperdicio').value),
+                horas_mod: parseFloat(document.getElementById('horas_mod').value),
+                tarifa_mod: parseFloat(document.getElementById('tarifa_mod').value),
+                cif_variable: parseFloat(document.getElementById('cif_variable').value),
+                costos_fijos: parseFloat(document.getElementById('costos_fijos').value),
+                volumen: parseFloat(document.getElementById('volumen').value),
+                precio_venta: parseFloat(document.getElementById('precio_venta').value)
+            };
+
+            // Aplicamos factor de conversión de moneda para la presentación
+            datosUltimoCalculo = { ...pInput };
+
+            const pConvertido = {
+                ...pInput,
+                precio_material: pInput.precio_material * curr.rate,
+                tarifa_mod: pInput.tarifa_mod * curr.rate,
+                cif_variable: pInput.cif_variable * curr.rate,
+                costos_fijos: pInput.costos_fijos * curr.rate,
+                precio_venta: pInput.precio_venta * curr.rate
+            };
+
+            const resBase = calcularModelo(pConvertido);
+
+            document.getElementById('res_costo_unit').textContent = `${curr.symbol}${resBase.costoUnitario.toFixed(2)}`;
+            document.getElementById('res_utilidad').textContent = `${curr.symbol}${resBase.utilidad.toFixed(2)}`;
+            document.getElementById('res_pe').textContent = `${resBase.puntoEquilibrio} un.`;
+
+            // DIBUJO DE LA GRÁFICA 1: EQUILIBRIO
+            const pe = resBase.puntoEquilibrio;
+            const maxVol = Math.max(pConvertido.volumen, pe * 1.5, 50);
+            const puntosX = [0, Math.round(pe * 0.33), Math.round(pe * 0.66), pe, Math.round(pe * 1.25), Math.round(maxVol)];
+            
+            const fixedCostsData = puntosX.map(() => pConvertido.costos_fijos);
+            const variableCostsData = puntosX.map(x => resBase.costoVariableUnitario * x);
+            const totalCostsData = puntosX.map(x => pConvertido.costos_fijos + (resBase.costoVariableUnitario * x));
+            const totalRevenueData = puntosX.map(x => pConvertido.precio_venta * x);
+
+            const ctx1 = document.getElementById('breakEvenChart').getContext('2d');
+            if (breakEvenChartInstance) breakEvenChartInstance.destroy();
+
+            breakEvenChartInstance = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: puntosX,
+                    datasets: [
+                        { label: 'Costos Fijos', data: fixedCostsData, borderColor: 'rgba(59, 130, 246, 1)', backgroundColor: 'rgba(59, 130, 246, 1)', borderWidth: 2, pointRadius: 4, tension: 0.1 },
+                        { label: 'Costos Variables', data: variableCostsData, borderColor: 'rgba(249, 115, 22, 1)', backgroundColor: 'rgba(249, 115, 22, 1)', borderWidth: 2, pointRadius: 4, tension: 0.1 },
+                        { label: 'Costos Totales', data: totalCostsData, borderColor: 'rgba(14, 165, 233, 1)', backgroundColor: 'rgba(14, 165, 233, 1)', borderWidth: 3, pointRadius: 5, tension: 0.1 },
+                        { label: 'Ingresos por Ventas', data: totalRevenueData, borderColor: 'rgba(234, 179, 8, 1)', backgroundColor: 'rgba(234, 179, 8, 1)', borderWidth: 3, pointRadius: 5, tension: 0.1 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { title: { display: true, text: 'Volumen de Unidades (u.)' } },
+                        y: { title: { display: true, text: `Monto (${curr.symbol})` } }
+                    }
+                }
+            });
+
+            // DIBUJO DE LA GRÁFICA 2: SENSIBILIDAD
+            const r1 = resBase;
+            const r2 = calcularModelo({...pConvertido, precio_material: pConvertido.precio_material * 1.12});
+            const r3 = calcularModelo({...pConvertido, desperdicio: 9.0});
+            const r4 = calcularModelo({...pConvertido, precio_venta: pConvertido.precio_venta * 0.85});
+
+            const ctx2 = document.getElementById('scenarioChart').getContext('2d');
+            if (scenarioChartInstance) scenarioChartInstance.destroy();
+
+            scenarioChartInstance = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ["Base", "MP +12%", "Desp. 9%", "Precio -15%"],
+                    datasets: [
+                        { label: `Utilidad Total (${curr.symbol})`, data: [r1.utilidad, r2.utilidad, r3.utilidad, r4.utilidad], backgroundColor: 'rgba(54, 162, 235, 0.6)', yAxisID: 'y' },
+                        { label: `Costo Unitario (${curr.symbol})`, data: [r1.costoUnitario, r2.costoUnitario, r3.costoUnitario, r4.costoUnitario], backgroundColor: 'rgba(255, 99, 132, 0.6)', yAxisID: 'y1' }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { type: 'linear', position: 'left', title: { display: true, text: `Utilidad (${curr.symbol})` } },
+                        y1: { type: 'linear', position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: `Costo Unitario (${curr.symbol})` } }
+                    }
+                }
+            });
+
+            // TABLA PRIORIZACIÓN
+            const variablesAProbar = ['precio_venta', 'precio_material', 'volumen', 'desperdicio', 'horas_mod', 'costos_fijos'];
+            let impactos = [];
+            variablesAProbar.forEach(varName => {
+                let pMod = {...pConvertido};
+                pMod[varName] = pMod[varName] * 1.10;
+                let resMod = calcularModelo(pMod);
+                impactos.push({ variable: varName, impacto: resMod.utilidad - resBase.utilidad });
+            });
+            impactos.sort((a, b) => Math.abs(b.impacto) - Math.abs(a.impacto));
+
+            let priorTableHTML = "";
+            impactos.forEach(item => {
+                priorTableHTML += `<tr class="border-b"><td class="py-1 px-2 font-medium">${item.variable}</td><td class="py-1 px-2">${curr.symbol}${item.impacto.toFixed(2)}</td></tr>`;
+            });
+            document.getElementById('prioritizationTableBody').innerHTML = priorTableHTML;
+
+            // TABLA ESCENARIOS
+            let escenarios = [
+                { nombre: "Base Actual", params: pConvertido },
+                { nombre: "Reducción Desperdicio (2%)", params: {...pConvertido, desperdicio: 2.0} },
+                { nombre: "Optimización MP (-5%)", params: {...pConvertido, precio_material: pConvertido.precio_material * 0.95} },
+                { nombre: "Aumento Volumen (+5%)", params: {...pConvertido, volumen: Math.round(pConvertido.volumen * 1.05)} }
+            ];
+
+            let scenariosTableHTML = "";
+            let mejorUtilidad = -Infinity;
+            let mejorNombreEscenario = "";
+
+            escenarios.forEach(esc => {
+                let resEsc = calcularModelo(esc.params);
+                if (resEsc.utilidad > mejorUtilidad) {
+                    mejorUtilidad = resEsc.utilidad;
+                    mejorNombreEscenario = esc.nombre;
+                }
+                scenariosTableHTML += `<tr class="border-b"><td class="py-1 px-2 font-medium">${esc.nombre}</td><td class="py-1 px-2 text-green-600 font-bold">${curr.symbol}${resEsc.utilidad.toFixed(2)}</td></tr>`;
+            });
+            document.getElementById('scenariosTableBody').innerHTML = scenariosTableHTML;
+
+            // ANALISIS DE VIABILIDAD
+            let estadoViabilidad = "";
+            let badgeViabilidad = "";
+            let margenPorcentaje = (resBase.margenContribucionUnitario / pConvertido.precio_venta) * 100;
+
+            if (resBase.utilidad > 0 && pConvertido.volumen > resBase.puntoEquilibrio * 1.15) {
+                estadoViabilidad = "ALTAMENTE VIABLE. El proyecto/producto proyecta márgenes sólidos de ganancia y opera holgadamente por encima del punto de equilibrio.";
+                badgeViabilidad = `<span class="bg-green-100 text-green-800 text-[10px] font-bold px-2 py-0.5 rounded border border-green-300">VIABLE</span>`;
+            } else if (resBase.utilidad >= 0) {
+                estadoViabilidad = "VIABILIDAD CRÍTICA / MARGINAL. El volumen actual está muy cercano al punto de equilibrio. Vulnerable ante pequeñas variaciones en costos.";
+                badgeViabilidad = `<span class="bg-yellow-100 text-yellow-800 text-[10px] font-bold px-2 py-0.5 rounded border border-yellow-300">CRÍTICO</span>`;
+            } else {
+                estadoViabilidad = "NO VIABLE ACTUALMENTE. El producto genera pérdidas operativas. Se requiere ajustar el precio, reducir costos variables o incrementar el volumen.";
+                badgeViabilidad = `<span class="bg-red-100 text-red-800 text-[10px] font-bold px-2 py-0.5 rounded border border-red-300">NO VIABLE</span>`;
+            }
+
+            // EVALUACIÓN DE RIESGOS AL USAR EL PRODUCTO/MATERIAL
+            let riesgosHTML = `
+                <ul class="list-disc pl-4 space-y-1 text-gray-600">
+                    <li><strong>Riesgo Operativo de Desperdicio (${pConvertido.desperdicio}%):</strong> ${pConvertido.desperdicio > 5 ? 'Nivel Alto. El porcentaje de merma actual reduce directamente el margen de contribución.' : 'Nivel Bajo/Controlado.'} Se aconseja estandarizar la técnica de manufactura.</li>
+                    <li><strong>Riesgo Volatilidad Materia Prima (${pConvertido.material || 'Material Base'}):</strong> Sensibilidad relevante ante variaciones de precios de insumos en el mercado global o local.</li>
+                    <li><strong>Riesgo Estructural (Costos Fijos):</strong> Representan ${curr.symbol}${pConvertido.costos_fijos.toFixed(2)}. Un bajón en volumen por debajo de ${resBase.puntoEquilibrio} unidades generará déficit financiero.</li>
+                </ul>
+            `;
+
+            // REPORTE GERENCIAL EXPANDIDO
+            let variableClave = impactos[0].variable;
+            let reportHTML = `
+                <div class="flex items-center justify-between border-b pb-1">
+                    <p class="font-bold text-gray-800">1. Viabilidad del Producto: ${badgeViabilidad}</p>
+                </div>
+                <p class="text-xs text-gray-600">${estadoViabilidad} (Margen de Contribución: <strong>${margenPorcentaje.toFixed(1)}%</strong>).</p>
+
+                <p class="font-bold text-gray-800 mt-2">2. Sensibilidad y Prioridades:</p>
+                <p>La variable con mayor impacto en la utilidad es <em>'${variableClave}'</em>. Cobertura requerida: <strong>${resBase.puntoEquilibrio} unidades</strong> de venta mínimas.</p>
+
+                <p class="font-bold text-gray-800 mt-2">3. Evaluación de Riesgos Asociados al Producto:</p>
+                ${riesgosHTML}
+
+                <p class="font-bold text-gray-800 mt-2">4. Recomendación de Optimización:</p>
+                <p>El escenario de mayor rendimiento es <em>'${mejorNombreEscenario}'</em>.</p>
+            `;
+            document.getElementById('gerencialReport').innerHTML = reportHTML;
+        }
+
+        // CONSULTA INTERACTIVA CON IA (GEMINI)
+        document.getElementById('askAiBtn').addEventListener('click', async () => {
+            const apiKey = sessionStorage.getItem('gemini_api_key');
+            const pregunta = document.getElementById('aiPrompt').value.trim();
+            const container = document.getElementById('aiResponseContainer');
+            const responseText = document.getElementById('aiResponseText');
+            const curr = getCurrentCurrency();
+
+            if (!apiKey) {
+                alert("Por favor haz clic en 'Cambiar API Key' arriba para reingresar tu clave.");
+                return;
+            }
+            if (!pregunta) {
+                alert("Escribe una pregunta para la IA.");
+                return;
+            }
+
+            container.classList.remove('hidden');
+            responseText.textContent = "🧠 Consultando con la IA de Gemini...";
+
+            const promptTexto = `
+                Actúa como Director Financiero y Especialista en Ingeniería de Costos e Evaluación de Riesgos Industriales.
+                Moneda actual: ${curr.code} (${curr.symbol}).
+                ${datosUltimoCalculo ? 'Datos actuales ingresados por el usuario: ' + JSON.stringify(datosUltimoCalculo) : 'No se han ingresado datos en el formulario aún.'}
+                
+                Pregunta del usuario sobre el producto/costos/riesgos: "${pregunta}"
+                
+                Responde en español de forma ejecutiva, concisa, profesional y estructurada. Incluye análisis de viabilidad o riesgos si es relevante.
+            `;
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{ text: promptTexto }]
+                        }]
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.candidates && data.candidates.length > 0 && data.candidates[0].content) {
+                    responseText.textContent = data.candidates[0].content.parts[0].text;
+                } else if (data.error) {
+                    responseText.textContent = `❌ Error de la API de Google: ${data.error.message || 'Clave no válida o sin permisos'}`;
+                } else {
+                    responseText.textContent = "⚠️ La API respondió pero no generó texto. Verifica que tu clave de API tenga permisos activos.";
+                }
+            } catch (err) {
+                responseText.textContent = "❌ Error de red o conexión: " + err.message;
+            }
+        });
+
+        document.getElementById('calcBtn').addEventListener('click', ejecutarCalculo);
     </script>
-  </div>
-
-  <!-- SLIDE 8: CONCLUSIONES -->
-  <div class="slide-container" id="slide8" style="background:#0f172a; padding:64px 80px; display:flex; flex-direction:column; justify-content:center;">
-    <p contenteditable="true" style="font-size:14px; font-weight:700; color:#38bdf8; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px;">Conclusiones del Sistema Actualizado</p>
-    <h2 contenteditable="true" style="font-family:'Space Grotesk', sans-serif; font-size:44px; font-weight:700; color:#f8fafc; margin-bottom:32px;">Sinergia Operativa, Riesgos e Inteligencia Multimoneda</h2>
-
-    <div style="display:flex; flex-direction:column; gap:20px; max-width:960px;">
-      <div style="display:flex; align-items:flex-start; gap:16px; background:rgba(255,255,255,0.05); padding:20px; border-radius:12px; border:1px solid rgba(255,255,255,0.1);">
-        <i class="fa-solid fa-check-circle" style="color:#38bdf8; font-size:24px; margin-top:2px;"></i>
-        <div>
-          <h4 contenteditable="true" style="font-size:18px; font-weight:700; color:#f8fafc; margin-bottom:4px;">Gestión Integral de Riesgos</h4>
-          <p contenteditable="true" style="font-size:15px; color:#94a3b8;">Identificación temprana de vulnerabilidades operativas y financieras directamente asociadas al producto.</p>
-        </div>
-      </div>
-
-      <div style="display:flex; align-items:flex-start; gap:16px; background:rgba(255,255,255,0.05); padding:20px; border-radius:12px; border:1px solid rgba(255,255,255,0.1);">
-        <i class="fa-solid fa-globe" style="color:#34d399; font-size:24px; margin-top:2px;"></i>
-        <div>
-          <h4 contenteditable="true" style="font-size:18px; font-weight:700; color:#f8fafc; margin-bottom:4px;">Versatilidad Multimoneda</h4>
-          <p contenteditable="true" style="font-size:15px; color:#94a3b8;">Capacidad instantánea para evaluar la rentabilidad en Quetzales, Dólares, Euros y Pesos para mercados locales e internacionales.</p>
-        </div>
-      </div>
-
-      <div style="display:flex; align-items:flex-start; gap:16px; background:rgba(255,255,255,0.05); padding:20px; border-radius:12px; border:1px solid rgba(255,255,255,0.1);">
-        <i class="fa-solid fa-brain" style="color:#c084fc; font-size:24px; margin-top:2px;"></i>
-        <div>
-          <h4 contenteditable="true" style="font-size:18px; font-weight:700; color:#f8fafc; margin-bottom:4px;">Dictamen Automático de Viabilidad</h4>
-          <p contenteditable="true" style="font-size:15px; color:#94a3b8;">Generación asistida por IA de recomendaciones estratégicas dirigidas a la alta dirección.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
 </body>
 </html>
