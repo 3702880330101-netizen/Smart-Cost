@@ -8,201 +8,201 @@
     <!-- LIBRERÍA DE GRÁFICAS (Chart.js) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="bg-gray-50 min-h-screen py-6 px-4 relative">
+<body class="bg-gray-50 min-h-screen py-6 px-4 relative text-gray-800">
 
     <!-- MODAL PARA LA CLAVE API DE GEMINI -->
     <div id="apiModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 text-center">
             <div class="mb-4">
-                <span class="text-3xl">🤖</span>
-                <h2 class="text-xl font-bold text-gray-800 mt-2">Configuración de IA (Gemini)</h2>
-                <p class="text-xs text-gray-500 mt-1">Ingresa tu Clave de API de Google AI para habilitar el asistente de consultas gerenciales en tiempo real.</p>
+                <span class="text-4xl">🤖</span>
+                <h2 class="text-2xl font-bold text-gray-800 mt-2">Configuración de IA (Gemini)</h2>
+                <p class="text-sm text-gray-600 mt-1">Ingresa tu Clave de API de Google AI para habilitar el asistente de consultas gerenciales en tiempo real.</p>
             </div>
-            <input type="password" id="apiKeyInput" placeholder="Pega tu clave de API aquí..." class="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm mb-4">
-            <button type="button" id="saveApiKeyBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md shadow transition duration-200">
+            <input type="password" id="apiKeyInput" placeholder="Pega tu clave de API aquí..." class="w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-base mb-4">
+            <button type="button" id="saveApiKeyBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg shadow transition duration-200 text-base">
                 Iniciar Sistema
             </button>
-            <p id="apiKeyError" class="text-xs text-red-500 mt-2 hidden">Por favor ingresa una clave válida.</p>
+            <p id="apiKeyError" class="text-sm text-red-500 mt-2 hidden">Por favor ingresa una clave válida.</p>
         </div>
     </div>
 
     <!-- CONTENEDOR PRINCIPAL -->
     <div class="max-w-7xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6 md:p-8">
         <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-800 text-center md:text-left flex-1">Modelo de Costos Industriales y IA Gerencial</h1>
+            <h1 class="text-2xl md:text-4xl font-extrabold text-gray-900 text-center md:text-left flex-1">Modelo de Costos Industriales y IA Gerencial</h1>
             
             <!-- SELECTOR DE MONEDA -->
-            <div class="flex items-center gap-2 bg-indigo-50 p-2 rounded-lg border border-indigo-200">
-                <label for="currencySelect" class="text-xs font-bold text-indigo-900">Moneda:</label>
-                <select id="currencySelect" class="text-xs bg-white border border-indigo-300 rounded p-1.5 font-semibold text-gray-700 focus:ring-indigo-500 focus:border-indigo-500">
+            <div class="flex items-center gap-2 bg-indigo-50 p-2.5 rounded-xl border border-indigo-200 shadow-sm">
+                <label for="currencySelect" class="text-sm font-bold text-indigo-900">Moneda:</label>
+                <select id="currencySelect" class="text-sm bg-white border border-indigo-300 rounded-lg p-2 font-bold text-gray-800 focus:ring-indigo-500 focus:border-indigo-500">
                     <option value="GTQ" data-symbol="Q" data-rate="1.0">Quetzal (GTQ - Q)</option>
                     <option value="USD" data-symbol="$" data-rate="0.13">Dólar (USD - $)</option>
                     <option value="EUR" data-symbol="€" data-rate="0.12">Euro (EUR - €)</option>
                     <option value="MXN" data-symbol="$" data-rate="2.55">Peso Mex (MXN - $)</option>
                     <option value="COP" data-symbol="$" data-rate="550.0">Peso Col (COP - $)</option>
                 </select>
-                <button type="button" id="changeKeyBtn" class="text-xs text-indigo-600 hover:underline ml-2">Cambiar API Key</button>
+                <button type="button" id="changeKeyBtn" class="text-xs text-indigo-600 hover:underline ml-2 font-semibold">Cambiar API Key</button>
             </div>
         </div>
-        <p class="text-xs md:text-sm text-gray-500 mb-6 text-center">Ingresa los parámetros a la izquierda para visualizar el impacto en tiempo real en las tablas, reportes y gráficas inferiores.</p>
+        <p class="text-sm md:text-base text-gray-600 mb-6 text-center">Ingresa los parámetros a la izquierda para visualizar el impacto en tiempo real en las tablas, reportes y gráficas inferiores.</p>
         
         <!-- LAYOUT PRINCIPAL DE 2 COLUMNAS -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             
             <!-- COLUMNA IZQUIERDA: FORMULARIO DE PARÁMETROS -->
-            <div class="lg:col-span-5 bg-gray-50 p-5 rounded-xl border">
-                <h2 class="text-lg font-bold text-gray-800 mb-4">Parámetros de Entrada</h2>
+            <div class="lg:col-span-5 bg-gray-50 p-6 rounded-2xl border border-gray-200 shadow-sm">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Parámetros de Entrada</h2>
                 
-                <form id="costForm" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <form id="costForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     
                     <!-- Material -->
                     <div class="sm:col-span-2">
-                        <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
+                        <label class="flex items-center justify-between text-sm font-semibold text-gray-800 mb-1">
                             <span>Material (Descripción)</span>
-                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
+                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 text-xs">
                                 ℹ️
-                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Nombre o tipo de materia prima principal utilizada (Ej. Aluminio, Acero)[cite: 1].
+                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-56 bg-gray-900 text-white text-xs rounded p-2 z-10 shadow-lg left-1/2 -translate-x-1/2">
+                                    Nombre o tipo de materia prima principal utilizada (Ej. Aluminio, Acero).
                                 </span>
                             </span>
                         </label>
-                        <input type="text" id="material" name="material" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                        <input type="text" id="material" name="material" class="block w-full rounded-lg border-gray-300 shadow-sm border p-2.5 bg-white text-base font-medium">
                     </div>
 
                     <!-- Consumo estándar -->
                     <div>
-                        <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
+                        <label class="flex items-center justify-between text-sm font-semibold text-gray-800 mb-1">
                             <span>Consumo estándar</span>
-                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
+                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 text-xs">
                                 ℹ️
-                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Cantidad neta de material requerida para fabricar una unidad de producto[cite: 1].
+                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-56 bg-gray-900 text-white text-xs rounded p-2 z-10 shadow-lg left-1/2 -translate-x-1/2">
+                                    Cantidad neta de material requerida para fabricar una unidad.
                                 </span>
                             </span>
                         </label>
-                        <input type="number" step="0.01" id="consumo_estandar" name="consumo_estandar" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                        <input type="number" step="0.01" id="consumo_estandar" name="consumo_estandar" class="block w-full rounded-lg border-gray-300 shadow-sm border p-2.5 bg-white text-base font-medium">
                     </div>
 
                     <!-- Precio material -->
                     <div>
-                        <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
+                        <label class="flex items-center justify-between text-sm font-semibold text-gray-800 mb-1">
                             <span>Precio material (<span class="currencySymbol">Q</span>)</span>
-                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
+                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 text-xs">
                                 ℹ️
-                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Costo unitario de adquisición de la materia prima por cada unidad de medida[cite: 1].
+                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-56 bg-gray-900 text-white text-xs rounded p-2 z-10 shadow-lg left-1/2 -translate-x-1/2">
+                                    Costo unitario de adquisición de la materia prima.
                                 </span>
                             </span>
                         </label>
-                        <input type="number" step="0.01" id="precio_material" name="precio_material" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                        <input type="number" step="0.01" id="precio_material" name="precio_material" class="block w-full rounded-lg border-gray-300 shadow-sm border p-2.5 bg-white text-base font-medium">
                     </div>
 
                     <!-- Desperdicio -->
                     <div>
-                        <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
+                        <label class="flex items-center justify-between text-sm font-semibold text-gray-800 mb-1">
                             <span>Desperdicio (%)</span>
-                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
+                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 text-xs">
                                 ℹ️
-                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Porcentaje estimado de material que se desecha o se pierde durante el proceso de producción[cite: 1].
+                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-56 bg-gray-900 text-white text-xs rounded p-2 z-10 shadow-lg left-1/2 -translate-x-1/2">
+                                    Porcentaje estimado de material que se desecha en producción.
                                 </span>
                             </span>
                         </label>
-                        <input type="number" step="0.1" id="desperdicio" name="desperdicio" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                        <input type="number" step="0.1" id="desperdicio" name="desperdicio" class="block w-full rounded-lg border-gray-300 shadow-sm border p-2.5 bg-white text-base font-medium">
                     </div>
 
                     <!-- Horas MOD -->
                     <div>
-                        <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
+                        <label class="flex items-center justify-between text-sm font-semibold text-gray-800 mb-1">
                             <span>Horas MOD</span>
-                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
+                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 text-xs">
                                 ℹ️
-                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Horas de Mano de Obra Directa invertidas en la fabricación de una unidad[cite: 1].
+                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-56 bg-gray-900 text-white text-xs rounded p-2 z-10 shadow-lg left-1/2 -translate-x-1/2">
+                                    Horas de Mano de Obra Directa por unidad.
                                 </span>
                             </span>
                         </label>
-                        <input type="number" step="0.1" id="horas_mod" name="horas_mod" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                        <input type="number" step="0.1" id="horas_mod" name="horas_mod" class="block w-full rounded-lg border-gray-300 shadow-sm border p-2.5 bg-white text-base font-medium">
                     </div>
 
                     <!-- Tarifa MOD -->
                     <div>
-                        <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
+                        <label class="flex items-center justify-between text-sm font-semibold text-gray-800 mb-1">
                             <span>Tarifa MOD (<span class="currencySymbol">Q</span>/h)</span>
-                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
+                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 text-xs">
                                 ℹ️
-                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Costo por hora pagado al personal de producción directo[cite: 1].
+                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-56 bg-gray-900 text-white text-xs rounded p-2 z-10 shadow-lg left-1/2 -translate-x-1/2">
+                                    Costo por hora pagado al personal de producción directo.
                                 </span>
                             </span>
                         </label>
-                        <input type="number" step="0.01" id="tarifa_mod" name="tarifa_mod" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                        <input type="number" step="0.01" id="tarifa_mod" name="tarifa_mod" class="block w-full rounded-lg border-gray-300 shadow-sm border p-2.5 bg-white text-base font-medium">
                     </div>
 
                     <!-- CIF variable -->
                     <div>
-                        <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
+                        <label class="flex items-center justify-between text-sm font-semibold text-gray-800 mb-1">
                             <span>CIF variable (<span class="currencySymbol">Q</span>)</span>
-                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
+                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 text-xs">
                                 ℹ️
-                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Costos Indirectos de Fabricación que varían según el volumen de producción unitario[cite: 1].
+                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-56 bg-gray-900 text-white text-xs rounded p-2 z-10 shadow-lg left-1/2 -translate-x-1/2">
+                                    Costos Indirectos de Fabricación variables por unidad.
                                 </span>
                             </span>
                         </label>
-                        <input type="number" step="0.01" id="cif_variable" name="cif_variable" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                        <input type="number" step="0.01" id="cif_variable" name="cif_variable" class="block w-full rounded-lg border-gray-300 shadow-sm border p-2.5 bg-white text-base font-medium">
                     </div>
 
                     <!-- Costos fijos -->
                     <div>
-                        <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
+                        <label class="flex items-center justify-between text-sm font-semibold text-gray-800 mb-1">
                             <span>Costos fijos (<span class="currencySymbol">Q</span>)</span>
-                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
+                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 text-xs">
                                 ℹ️
-                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Gastos operativos totales que no cambian sin importar cuántas unidades se produzcan[cite: 1].
+                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-56 bg-gray-900 text-white text-xs rounded p-2 z-10 shadow-lg left-1/2 -translate-x-1/2">
+                                    Gastos operativos totales fijos del período.
                                 </span>
                             </span>
                         </label>
-                        <input type="number" step="0.01" id="costos_fijos" name="costos_fijos" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                        <input type="number" step="0.01" id="costos_fijos" name="costos_fijos" class="block w-full rounded-lg border-gray-300 shadow-sm border p-2.5 bg-white text-base font-medium">
                     </div>
 
                     <!-- Volumen -->
                     <div>
-                        <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
+                        <label class="flex items-center justify-between text-sm font-semibold text-gray-800 mb-1">
                             <span>Volumen / Unidades</span>
-                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
+                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 text-xs">
                                 ℹ️
-                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Cantidad total de unidades que se planea fabricar y vender en el período[cite: 1].
+                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-56 bg-gray-900 text-white text-xs rounded p-2 z-10 shadow-lg left-1/2 -translate-x-1/2">
+                                    Cantidad total de unidades a fabricar y vender.
                                 </span>
                             </span>
                         </label>
-                        <input type="number" id="volumen" name="volumen" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                        <input type="number" id="volumen" name="volumen" class="block w-full rounded-lg border-gray-300 shadow-sm border p-2.5 bg-white text-base font-medium">
                     </div>
 
                     <!-- Precio venta -->
                     <div class="sm:col-span-2">
-                        <label class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1">
+                        <label class="flex items-center justify-between text-sm font-semibold text-gray-800 mb-1">
                             <span>Precio de venta unitario (<span class="currencySymbol">Q</span>)</span>
-                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200 text-[10px]">
+                            <span class="group relative cursor-pointer text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 text-xs">
                                 ℹ️
-                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-48 bg-gray-800 text-white text-[10px] rounded p-1.5 z-10 shadow-lg left-1/2 -translate-x-1/2">
-                                    Precio monetario al cual se comercializa cada unidad terminada en el mercado[cite: 1].
+                                <span class="absolute bottom-full mb-1 hidden group-hover:block w-56 bg-gray-900 text-white text-xs rounded p-2 z-10 shadow-lg left-1/2 -translate-x-1/2">
+                                    Precio al cual se comercializa cada unidad terminada.
                                 </span>
                             </span>
                         </label>
-                        <input type="number" step="0.01" id="precio_venta" name="precio_venta" class="block w-full rounded-md border-gray-300 shadow-sm border p-2 bg-white text-sm">
+                        <input type="number" step="0.01" id="precio_venta" name="precio_venta" class="block w-full rounded-lg border-gray-300 shadow-sm border p-2.5 bg-white text-base font-medium">
                     </div>
 
                     <!-- Alerta -->
-                    <div id="alertContainer" class="sm:col-span-2 hidden bg-red-100 border border-red-400 text-red-700 px-3 py-2 rounded text-xs" role="alert">
-                        <span id="alertMessage" class="block font-medium"></span>
+                    <div id="alertContainer" class="sm:col-span-2 hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-sm font-semibold" role="alert">
+                        <span id="alertMessage" class="block"></span>
                     </div>
 
                     <!-- Botón Calcular -->
                     <div class="sm:col-span-2 mt-2">
-                        <button type="button" id="calcBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-4 rounded-md shadow transition duration-200 text-sm cursor-pointer">
+                        <button type="button" id="calcBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition duration-200 text-base cursor-pointer">
                             Actualizar Análisis
                         </button>
                     </div>
@@ -210,67 +210,67 @@
             </div>
 
             <!-- COLUMNA DERECHA: RESULTADOS, TABLAS Y REPORTES -->
-            <div class="lg:col-span-7 bg-gray-50 p-5 rounded-xl border space-y-4">
-                <div class="flex flex-col sm:flex-row justify-between items-center gap-2">
-                    <h2 class="text-lg font-bold text-gray-800">Análisis y Resultados</h2>
-                    <button type="button" onclick="window.print()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1.5 px-3 rounded-md shadow transition duration-200 text-xs flex items-center gap-1.5">
+            <div class="lg:col-span-7 bg-gray-50 p-6 rounded-2xl border border-gray-200 shadow-sm space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-3">
+                    <h2 class="text-xl font-bold text-gray-800">Análisis y Resultados</h2>
+                    <button type="button" onclick="window.print()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl shadow transition duration-200 text-sm flex items-center gap-2 cursor-pointer">
                         📄 Descargar PDF
                     </button>
                 </div>
 
                 <!-- Tarjetas de Métricas -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center">
-                    <div class="bg-white p-3 rounded-lg shadow-sm border">
-                        <p class="text-[11px] text-gray-500 uppercase font-semibold">Costo Unitario</p>
-                        <p id="res_costo_unit" class="text-base font-bold text-indigo-600 mt-0.5">Q0.00</p>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                        <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Costo Unitario</p>
+                        <p id="res_costo_unit" class="text-xl font-extrabold text-indigo-600 mt-1">Q0.00</p>
                     </div>
-                    <div class="bg-white p-3 rounded-lg shadow-sm border">
-                        <p class="text-[11px] text-gray-500 uppercase font-semibold">Utilidad Total</p>
-                        <p id="res_utilidad" class="text-base font-bold text-green-600 mt-0.5">Q0.00</p>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                        <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Utilidad Total</p>
+                        <p id="res_utilidad" class="text-xl font-extrabold text-green-600 mt-1">Q0.00</p>
                     </div>
-                    <div class="bg-white p-3 rounded-lg shadow-sm border">
-                        <p class="text-[11px] text-gray-500 uppercase font-semibold">Punto de Equilibrio</p>
-                        <p id="res_pe" class="text-base font-bold text-blue-600 mt-0.5">0 un.</p>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                        <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Punto de Equilibrio</p>
+                        <p id="res_pe" class="text-xl font-extrabold text-blue-600 mt-1">0 un.</p>
                     </div>
                 </div>
 
                 <!-- TABLAS DE ANÁLISIS -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div class="bg-white p-3 rounded-lg shadow-sm border">
-                        <h3 class="text-[11px] font-bold text-gray-700 uppercase mb-2">Prioridad (Impacto +10%)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                        <h3 class="text-xs font-extrabold text-gray-700 uppercase mb-3 tracking-wider">Prioridad (Impacto +10%)</h3>
                         <div class="overflow-x-auto">
-                            <table class="min-w-full text-xs text-left text-gray-500">
-                                <thead class="text-[10px] text-gray-700 uppercase bg-gray-100">
+                            <table class="min-w-full text-sm text-left text-gray-700">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-100 font-bold">
                                     <tr>
-                                        <th class="py-1 px-2">Variable</th>
-                                        <th class="py-1 px-2">Impacto (<span class="currencySymbol">Q</span>)</th>
+                                        <th class="py-2 px-3">Variable</th>
+                                        <th class="py-2 px-3">Impacto (<span class="currencySymbol">Q</span>)</th>
                                     </tr>
                                 </thead>
-                                <tbody id="prioritizationTableBody"></tbody>
+                                <tbody id="prioritizationTableBody" class="font-medium"></tbody>
                             </table>
                         </div>
                     </div>
 
-                    <div class="bg-white p-3 rounded-lg shadow-sm border">
-                        <h3 class="text-[11px] font-bold text-gray-700 uppercase mb-2">Escenarios de Mejora</h3>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                        <h3 class="text-xs font-extrabold text-gray-700 uppercase mb-3 tracking-wider">Escenarios de Mejora</h3>
                         <div class="overflow-x-auto">
-                            <table class="min-w-full text-xs text-left text-gray-500">
-                                <thead class="text-[10px] text-gray-700 uppercase bg-gray-100">
+                            <table class="min-w-full text-sm text-left text-gray-700">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-100 font-bold">
                                     <tr>
-                                        <th class="py-1 px-2">Escenario</th>
-                                        <th class="py-1 px-2">Utilidad (<span class="currencySymbol">Q</span>)</th>
+                                        <th class="py-2 px-3">Escenario</th>
+                                        <th class="py-2 px-3">Utilidad (<span class="currencySymbol">Q</span>)</th>
                                     </tr>
                                 </thead>
-                                <tbody id="scenariosTableBody"></tbody>
+                                <tbody id="scenariosTableBody" class="font-medium"></tbody>
                             </table>
                         </div>
                     </div>
                 </div>
 
                 <!-- REPORTE GERENCIAL ESCRITO, VIABILIDAD Y RIESGOS -->
-                <div class="bg-white p-4 rounded-lg shadow-sm border space-y-3">
-                    <h3 class="text-xs font-bold text-gray-800 uppercase border-b pb-1">Reporte Gerencial, Viabilidad y Evaluación de Riesgos</h3>
-                    <div id="gerencialReport" class="text-xs text-gray-600 space-y-2"></div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 space-y-3">
+                    <h3 class="text-sm font-extrabold text-gray-900 uppercase border-b pb-2 tracking-wider">Reporte Gerencial, Viabilidad y Evaluación de Riesgos</h3>
+                    <div id="gerencialReport" class="text-sm text-gray-700 space-y-3 leading-relaxed"></div>
                 </div>
 
             </div>
@@ -278,21 +278,21 @@
         </div>
 
         <!-- SECCIÓN INFERIOR: GRÁFICAS LADO A LADO CON EXPLICACIONES -->
-        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
             
             <!-- GRÁFICA 1: PUNTO DE EQUILIBRIO -->
-            <div class="bg-white p-4 rounded-xl shadow-sm border flex flex-col justify-between">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 flex flex-col justify-between">
                 <div>
-                    <h3 class="text-xs font-bold text-gray-700 mb-2 text-center">📈 Gráfica de Punto de Equilibrio</h3>
-                    <div class="relative w-full h-60">
+                    <h3 class="text-sm font-bold text-gray-800 mb-3 text-center">📈 Gráfica de Punto de Equilibrio</h3>
+                    <div class="relative w-full h-72">
                         <canvas id="breakEvenChart"></canvas>
                     </div>
                 </div>
                 <!-- Explicación de datos -->
-                <div class="mt-3 p-2.5 bg-blue-50 rounded border border-blue-100 text-[11px] text-gray-700 space-y-1">
-                    <p class="font-bold text-blue-900">📖 Explicación de Datos:</p>
-                    <p>Muestra cómo interactúan los costos e ingresos a distintos volúmenes de unidades:</p>
-                    <ul class="list-disc pl-4 space-y-0.5 text-gray-600">
+                <div class="mt-4 p-3.5 bg-blue-50 rounded-xl border border-blue-100 text-xs sm:text-sm text-gray-700 space-y-1.5">
+                    <p class="font-bold text-blue-900 text-sm">📖 Explicación de Datos:</p>
+                    <p class="font-medium">Muestra cómo interactúan los costos e ingresos a distintos volúmenes de unidades:</p>
+                    <ul class="list-disc pl-5 space-y-1 text-gray-700">
                         <li><strong>Costos Fijos (Azul):</strong> Gastos operativos estables que no cambian con el volumen.</li>
                         <li><strong>Costos Variables (Naranja):</strong> Incrementan proporcionalmente según las unidades fabricadas.</li>
                         <li><strong>Costos Totales (Celeste):</strong> La suma de los costos fijos y variables.</li>
@@ -302,18 +302,18 @@
             </div>
 
             <!-- GRÁFICA 2: SENSIBILIDAD -->
-            <div class="bg-white p-4 rounded-xl shadow-sm border flex flex-col justify-between">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 flex flex-col justify-between">
                 <div>
-                    <h3 class="text-xs font-bold text-gray-700 mb-2 text-center">📊 Comparativa de Escenarios de Sensibilidad</h3>
-                    <div class="relative w-full h-60">
+                    <h3 class="text-sm font-bold text-gray-800 mb-3 text-center">📊 Comparativa de Escenarios de Sensibilidad</h3>
+                    <div class="relative w-full h-72">
                         <canvas id="scenarioChart"></canvas>
                     </div>
                 </div>
                 <!-- Explicación de datos -->
-                <div class="mt-3 p-2.5 bg-orange-50 rounded border border-orange-100 text-[11px] text-gray-700 space-y-1">
-                    <p class="font-bold text-orange-900">📖 Explicación de Datos:</p>
-                    <p>Compara el comportamiento financiero bajo cuatro escenarios de estrés o mejora:</p>
-                    <ul class="list-disc pl-4 space-y-0.5 text-gray-600">
+                <div class="mt-4 p-3.5 bg-orange-50 rounded-xl border border-orange-100 text-xs sm:text-sm text-gray-700 space-y-1.5">
+                    <p class="font-bold text-orange-900 text-sm">📖 Explicación de Datos:</p>
+                    <p class="font-medium">Compara el comportamiento financiero bajo cuatro escenarios de estrés o mejora:</p>
+                    <ul class="list-disc pl-5 space-y-1 text-gray-700">
                         <li><strong>Escenario Base:</strong> Resultados con los parámetros actuales ingresados.</li>
                         <li><strong>Incremento de Materia Prima (+12%) o Desperdicio (9%):</strong> Simula el impacto de costos adversos.</li>
                         <li><strong>Reducción de Precio (-15%):</strong> Evalúa la competitividad ante ajustes de mercado.</li>
@@ -326,33 +326,33 @@
 
     </div>
 
-    <!-- BOTÓN FLOTANTE Y VENTANA DE CHAT DE IA -->
+    <!-- BOTÓN FLOTANTE Y VENTANA DE CHAT DE IA AMPLIADA -->
     <div class="fixed bottom-6 right-6 z-50">
-        <button id="floatingAiBtn" class="bg-orange-600 hover:bg-orange-700 text-white font-bold p-4 rounded-full shadow-2xl transition duration-300 flex items-center gap-2 cursor-pointer group" title="Consultar con IA Gerencial">
-            <span class="text-2xl">🤖</span>
-            <span class="hidden group-hover:inline text-xs font-semibold pr-1">Asistente IA</span>
+        <button id="floatingAiBtn" class="bg-orange-600 hover:bg-orange-700 text-white font-bold p-4 rounded-full shadow-2xl transition duration-300 flex items-center gap-2 cursor-pointer group scale-105" title="Consultar con IA Gerencial">
+            <span class="text-3xl">🤖</span>
+            <span class="hidden group-hover:inline text-sm font-bold pr-2">Asistente IA</span>
         </button>
     </div>
 
-    <!-- MODAL / CONTENEDOR FLOTANTE DEL CHAT -->
-    <div id="aiChatModal" class="fixed bottom-24 right-6 z-50 w-80 sm:w-96 bg-white rounded-xl shadow-2xl border border-gray-200 hidden flex flex-col overflow-hidden transition-all duration-300">
-        <div class="bg-indigo-900 text-white p-3 flex justify-between items-center">
-            <h3 class="text-xs font-bold flex items-center gap-1.5"><span>🤖</span> Consultas Gerenciales con IA de Gemini</h3>
-            <button type="button" id="closeAiModalBtn" class="text-white hover:text-gray-200 text-sm font-bold cursor-pointer">✕</button>
+    <!-- MODAL / VENTANA FLOTANTE DEL CHAT (AMPLIADA) -->
+    <div id="aiChatModal" class="fixed bottom-24 right-6 z-50 w-[92vw] sm:w-[480px] md:w-[540px] bg-white rounded-2xl shadow-2xl border border-gray-300 hidden flex flex-col overflow-hidden transition-all duration-300">
+        <div class="bg-indigo-900 text-white p-4 flex justify-between items-center shadow">
+            <h3 class="text-base font-bold flex items-center gap-2"><span>🤖</span> Consultas Gerenciales con IA de Gemini</h3>
+            <button type="button" id="closeAiModalBtn" class="text-white hover:text-gray-200 text-lg font-bold cursor-pointer px-2">✕</button>
         </div>
-        <div class="p-3 space-y-3 bg-gray-50 flex-1 flex flex-col">
-            <p class="text-[11px] text-gray-500">Pregúntale a la IA sobre materiales, costos, riesgos o escenarios hipotéticos:</p>
+        <div class="p-5 space-y-4 bg-gray-50 flex-1 flex flex-col">
+            <p class="text-sm text-gray-600 font-medium">Pregúntale al director financiero virtual sobre materiales, costos, riesgos operativos o escenarios hipotéticos:</p>
             
             <div class="flex gap-2">
-                <input type="text" id="aiPrompt" placeholder="Ej. ¿Qué riesgos implica este material?" class="flex-1 text-xs border rounded-md p-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
-                <button type="button" id="askAiBtn" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-3 rounded-md text-xs transition duration-200 cursor-pointer">
+                <input type="text" id="aiPrompt" placeholder="Ej. ¿Qué riesgos implica utilizar este material?" class="flex-1 text-sm border border-gray-300 rounded-xl p-3 focus:ring-indigo-500 focus:border-indigo-500 bg-white font-medium shadow-sm">
+                <button type="button" id="askAiBtn" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-5 rounded-xl text-sm transition duration-200 cursor-pointer shadow">
                     Enviar
                 </button>
             </div>
 
-            <div id="aiResponseContainer" class="hidden p-2.5 bg-indigo-50 rounded-md border border-indigo-100 text-xs text-gray-700 space-y-1 max-h-48 overflow-y-auto">
-                <p class="font-bold text-indigo-900">Respuesta de la IA:</p>
-                <div id="aiResponseText" class="whitespace-pre-line"></div>
+            <div id="aiResponseContainer" class="hidden p-4 bg-indigo-50 rounded-xl border border-indigo-200 text-sm text-gray-800 space-y-2 max-h-96 overflow-y-auto shadow-inner">
+                <p class="font-bold text-indigo-900 text-base border-b border-indigo-200 pb-1">Respuesta de la IA:</p>
+                <div id="aiResponseText" class="whitespace-pre-line leading-relaxed"></div>
             </div>
         </div>
     </div>
@@ -580,7 +580,7 @@
 
             let priorTableHTML = "";
             impactos.forEach(item => {
-                priorTableHTML += `<tr class="border-b"><td class="py-1 px-2 font-medium">${item.variable}</td><td class="py-1 px-2">${curr.symbol}${item.impacto.toFixed(2)}</td></tr>`;
+                priorTableHTML += `<tr class="border-b"><td class="py-2 px-3 font-semibold">${item.variable}</td><td class="py-2 px-3">${curr.symbol}${item.impacto.toFixed(2)}</td></tr>`;
             });
             document.getElementById('prioritizationTableBody').innerHTML = priorTableHTML;
 
@@ -602,7 +602,7 @@
                     mejorUtilidad = resEsc.utilidad;
                     mejorNombreEscenario = esc.nombre;
                 }
-                scenariosTableHTML += `<tr class="border-b"><td class="py-1 px-2 font-medium">${esc.nombre}</td><td class="py-1 px-2 text-green-600 font-bold">${curr.symbol}${resEsc.utilidad.toFixed(2)}</td></tr>`;
+                scenariosTableHTML += `<tr class="border-b"><td class="py-2 px-3 font-semibold">${esc.nombre}</td><td class="py-2 px-3 text-green-700 font-bold">${curr.symbol}${resEsc.utilidad.toFixed(2)}</td></tr>`;
             });
             document.getElementById('scenariosTableBody').innerHTML = scenariosTableHTML;
 
@@ -613,17 +613,17 @@
 
             if (resBase.utilidad > 0 && pConvertido.volumen > resBase.puntoEquilibrio * 1.15) {
                 estadoViabilidad = "ALTAMENTE VIABLE. El proyecto/producto proyecta márgenes sólidos de ganancia y opera holgadamente por encima del punto de equilibrio.";
-                badgeViabilidad = `<span class="bg-green-100 text-green-800 text-[10px] font-bold px-2 py-0.5 rounded border border-green-300">VIABLE</span>`;
+                badgeViabilidad = `<span class="bg-green-100 text-green-800 text-xs font-bold px-2.5 py-1 rounded-md border border-green-300">VIABLE</span>`;
             } else if (resBase.utilidad >= 0) {
                 estadoViabilidad = "VIABILIDAD CRÍTICA / MARGINAL. El volumen actual está muy cercano al punto de equilibrio. Vulnerable ante pequeñas variaciones en costos.";
-                badgeViabilidad = `<span class="bg-yellow-100 text-yellow-800 text-[10px] font-bold px-2 py-0.5 rounded border border-yellow-300">CRÍTICO</span>`;
+                badgeViabilidad = `<span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-2.5 py-1 rounded-md border border-yellow-300">CRÍTICO</span>`;
             } else {
                 estadoViabilidad = "NO VIABLE ACTUALMENTE. El producto genera pérdidas operativas. Se requiere ajustar el precio, reducir costos variables o incrementar el volumen.";
-                badgeViabilidad = `<span class="bg-red-100 text-red-800 text-[10px] font-bold px-2 py-0.5 rounded border border-red-300">NO VIABLE</span>`;
+                badgeViabilidad = `<span class="bg-red-100 text-red-800 text-xs font-bold px-2.5 py-1 rounded-md border border-red-300">NO VIABLE</span>`;
             }
 
             let riesgosHTML = `
-                <ul class="list-disc pl-4 space-y-1 text-gray-600">
+                <ul class="list-disc pl-5 space-y-1.5 text-gray-700">
                     <li><strong>Riesgo Operativo de Desperdicio (${pConvertido.desperdicio}%):</strong> ${pConvertido.desperdicio > 5 ? 'Nivel Alto. El porcentaje de merma actual reduce directamente el margen.' : 'Nivel Bajo/Controlado.'} Se aconseja estandarizar la técnica de manufactura.</li>
                     <li><strong>Riesgo Volatilidad Materia Prima (${pConvertido.material || 'Material Base'}):</strong> Sensibilidad relevante ante variaciones de precios de insumos en el mercado.</li>
                     <li><strong>Riesgo Estructural (Costos Fijos):</strong> Representan ${curr.symbol}${pConvertido.costos_fijos.toFixed(2)}. Un descenso por debajo de ${resBase.puntoEquilibrio} unidades generará déficit financiero.</li>
@@ -632,19 +632,19 @@
 
             let variableClave = impactos[0].variable;
             let reportHTML = `
-                <div class="flex items-center justify-between border-b pb-1">
-                    <p class="font-bold text-gray-800">1. Viabilidad del Producto: ${badgeViabilidad}</p>
+                <div class="flex items-center justify-between border-b pb-2">
+                    <p class="font-bold text-gray-900 text-base">1. Viabilidad del Producto: ${badgeViabilidad}</p>
                 </div>
-                <p class="text-xs text-gray-600">${estadoViabilidad} (Margen de Contribución: <strong>${margenPorcentaje.toFixed(1)}%</strong>).</p>
+                <p class="text-sm text-gray-700">${estadoViabilidad} (Margen de Contribución: <strong>${margenPorcentaje.toFixed(1)}%</strong>).</p>
 
-                <p class="font-bold text-gray-800 mt-2">2. Sensibilidad y Prioridades:</p>
-                <p>La variable con mayor impacto en la utilidad es <em>'${variableClave}'</em>. Cobertura requerida: <strong>${resBase.puntoEquilibrio} unidades</strong> de venta mínimas.</p>
+                <p class="font-bold text-gray-900 text-base mt-3">2. Sensibilidad y Prioridades:</p>
+                <p class="text-sm text-gray-700">La variable con mayor impacto en la utilidad es <em>'${variableClave}'</em>. Cobertura requerida: <strong>${resBase.puntoEquilibrio} unidades</strong> de venta mínimas.</p>
 
-                <p class="font-bold text-gray-800 mt-2">3. Evaluación de Riesgos Asociados al Producto:</p>
+                <p class="font-bold text-gray-900 text-base mt-3">3. Evaluación de Riesgos Asociados al Producto:</p>
                 ${riesgosHTML}
 
-                <p class="font-bold text-gray-800 mt-2">4. Recomendación de Optimización:</p>
-                <p>El escenario de mayor rendimiento es <em>'${mejorNombreEscenario}'</em>.</p>
+                <p class="font-bold text-gray-900 text-base mt-3">4. Recomendación de Optimización:</p>
+                <p class="text-sm text-gray-700">El escenario de mayor rendimiento es <em>'${mejorNombreEscenario}'</em>.</p>
             `;
             document.getElementById('gerencialReport').innerHTML = reportHTML;
         }
